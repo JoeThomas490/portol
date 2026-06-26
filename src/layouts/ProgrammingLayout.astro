@@ -1,0 +1,15 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'Programming' } = Astro.props;
+---
+
+<BaseLayout title={title} mode="programming">
+  <div class="max-w-7xl mx-auto px-6">
+    <slot />
+  </div>
+</BaseLayout>

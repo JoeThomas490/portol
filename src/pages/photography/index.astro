@@ -1,0 +1,44 @@
+---
+import PhotographyLayout from '../../layouts/PhotographyLayout.astro';
+import { getCollection } from 'astro:content';
+
+const photos = await getCollection('photography');
+const sorted = photos.sort((a, b) => a.data.order - b.data.order);
+---
+
+<PhotographyLayout>
+  <section class="py-12">
+    <h1 class="text-4xl md:text-6xl font-light tracking-tight mb-4" style="font-family: var(--font-heading);">
+      Photography
+    </h1>
+    <p class="text-lg mb-12" style="color: var(--color-accent);">
+      A collection of moments captured through the lens.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {sorted.map((photo) => (
+        <figure class="group relative aspect-[4/5] rounded-lg overflow-hidden" style="background-color: var(--color-muted);">
+          <img
+            src={photo.data.src}
+            alt={photo.data.alt}
+            loading="lazy"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          {photo.data.caption && (
+            <figcaption
+              class="absolute bottom-0 left-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style="background: linear-gradient(transparent, rgba(0,0,0,0.7));"
+            >
+              <p class="text-sm text-white">{photo.data.caption}</p>
+              {photo.data.camera && (
+                <p class="text-xs text-white/60 mt-1">
+                  {photo.data.camera}{photo.data.lens ? ` · ${photo.data.lens}` : ''}
+                </p>
+              )}
+            </figcaption>
+          )}
+        </figure>
+      ))}
+    </div>
+  </section>
+</PhotographyLayout>

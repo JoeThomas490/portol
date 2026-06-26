@@ -1,0 +1,9 @@
+[data-mode="programming"] {
+  --color-bg: #0a0a0a;
+  --color-text: #f0f0f0;
+  --color-accent: #a0a0a0;
+  --color-muted: #1a1a1a;
+  --color-border: #2a2a2a;
+  --font-heading: "JetBrains Mono", "Fira Code", monospace;
+  --font-body: "Inter", system-ui, sans-serif;
+}

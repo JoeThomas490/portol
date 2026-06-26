@@ -1,0 +1,25 @@
+{
+  "name": "portol",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.6.13",
+    "@astrojs/react": "^6.0.0",
+    "@tailwindcss/vite": "^4.3.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.185.0",
+    "astro": "^5.0.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "tailwindcss": "^4.3.1",
+    "three": "^0.185.0",
+    "wrangler": "^4.105.0"
+  }
+}

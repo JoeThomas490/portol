@@ -1,0 +1,83 @@
+---
+import { ViewTransitions } from "astro:transitions";
+
+interface Props {
+  title: string;
+  mode: "photography" | "programming";
+}
+
+const { title, mode } = Astro.props;
+const isPhotography = mode === "photography";
+const targetHref = isPhotography ? "/programming" : "/photography";
+const targetLabel = isPhotography ? "Programming" : "Photography";
+const dotColor = isPhotography ? "#0a0a0a" : "#ffffff";
+---
+
+<!doctype html>
+<html lang="en" data-mode={mode}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Portol — Joe Thomas" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} | Joenoseph</title>
+    <ViewTransitions />
+  </head>
+  <body
+    class="min-h-dvh"
+    style={`background-color: var(--color-bg); color: var(--color-text);`}
+  >
+    <nav transition:persist class="fixed top-0 left-0 right-0 z-50 p-6">
+      <div class="flex items-center justify-between">
+        <a
+          href="/"
+          class="text-lg font-bold tracking-tight"
+          style="color: var(--color-text);"
+        >
+          Joenoseph
+        </a>
+        <a
+          id="mode-toggle"
+          href={targetHref}
+          data-astro-prefetch="load"
+          class="relative flex items-center gap-3 px-4 py-2 rounded-full transition-all duration-300 hover:scale-105"
+          style={`border: 1px solid var(--color-border); color: var(--color-text);`}
+        >
+          <span class="text-sm font-medium">{targetLabel}</span>
+          <span
+            class="w-3 h-3 rounded-full"
+            style={`background-color: ${dotColor};`}></span>
+        </a>
+      </div>
+    </nav>
+
+    <main style="padding-top: 1rem;">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<script>
+  function updateToggle() {
+    const toggle = document.getElementById("mode-toggle");
+    if (!toggle) return;
+    const isProgramming = window.location.pathname.startsWith("/programming");
+    toggle.setAttribute(
+      "href",
+      isProgramming ? "/photography" : "/programming",
+    );
+    const label = toggle.querySelector("span");
+    if (label)
+      label.textContent = isProgramming ? "Photography" : "Programming";
+    const dot = toggle.querySelector("span:last-child") as HTMLElement;
+    if (dot) dot.style.backgroundColor = isProgramming ? "#ffffff" : "#0a0a0a";
+  }
+  document.addEventListener("astro:after-swap", updateToggle);
+</script>
+
+<style is:global>
+  @import "../styles/global.css";
+  @import "../styles/modes/photography.css";
+  @import "../styles/modes/programming.css";
+  @import "../styles/transitions.css";
+</style>

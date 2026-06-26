@@ -1,0 +1,55 @@
+@layer base {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0.25, 0, 0.2, 1);
+  }
+
+  /* Entering programming mode: dark sweep from right */
+  [data-mode="programming"]::view-transition-old(root) {
+    animation-name: sweep-to-left;
+  }
+
+  [data-mode="programming"]::view-transition-new(root) {
+    animation-name: sweep-from-right;
+  }
+
+  /* Entering photography mode: light sweep from left */
+  [data-mode="photography"]::view-transition-old(root) {
+    animation-name: sweep-to-right;
+  }
+
+  [data-mode="photography"]::view-transition-new(root) {
+    animation-name: sweep-from-left;
+  }
+
+  @keyframes sweep-to-left {
+    to {
+      clip-path: inset(0 100% 0 0);
+    }
+  }
+
+  @keyframes sweep-from-right {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @keyframes sweep-to-right {
+    to {
+      clip-path: inset(0 0 0 100%);
+    }
+  }
+
+  @keyframes sweep-from-left {
+    from {
+      clip-path: inset(0 0 0 100%);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+}
