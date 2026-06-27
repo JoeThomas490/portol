@@ -1,6 +1,7 @@
 ---
 import { ViewTransitions } from "astro:transitions";
-import { Camera, CodeXml } from "@lucide/astro";
+import Camera from "@lucide/astro/icons/camera";
+import CodeXml from "@lucide/astro/icons/code-xml";
 
 interface Props {
   title: string;
@@ -52,7 +53,7 @@ const { title, mode } = Astro.props;
       >
         <a
           href="/photography"
-          data-astro-prefetch="load"
+          data-astro-prefetch="hover"
           class="mode-option flex items-center gap-2.5 py-2.5 px-4 rounded-xl whitespace-nowrap no-underline transition-[background-color,opacity] duration-150 ease-linear hover:bg-[var(--color-border)]"
           data-mode="photography"
         >
@@ -61,7 +62,7 @@ const { title, mode } = Astro.props;
         </a>
         <a
           href="/programming"
-          data-astro-prefetch="load"
+          data-astro-prefetch="hover"
           class="mode-option flex items-center gap-2.5 py-2.5 px-4 rounded-xl whitespace-nowrap no-underline transition-[background-color,opacity] duration-150 ease-linear hover:bg-[var(--color-border)]"
           data-mode="programming"
         >
