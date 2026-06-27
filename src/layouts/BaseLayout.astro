@@ -29,13 +29,19 @@ const dotColor = isPhotography ? "#0a0a0a" : "#ffffff";
   >
     <nav transition:persist class="fixed top-0 left-0 right-0 z-50 p-6">
       <div class="flex items-center justify-between">
-        <a
-          href="/"
-          class="text-lg font-bold tracking-tight"
-          style="color: var(--color-text);"
-        >
-          Joenoseph
-        </a>
+        <div class="flex flex-col items-start gap-0">
+          <a
+            href="/"
+            class="text-lg font-bold tracking-tight"
+            style="color: var(--color-text);"
+          >
+            Joe Thomas
+          </a>
+          <span
+            class="text-lg font-bold tracking-tight text-orange-400"
+            id="mode-label"></span>
+        </div>
+
         <a
           id="mode-toggle"
           href={targetHref}
@@ -58,21 +64,22 @@ const dotColor = isPhotography ? "#0a0a0a" : "#ffffff";
 </html>
 
 <script>
-  function updateToggle() {
+  function updateMode() {
     const toggle = document.getElementById("mode-toggle");
+    const label = document.getElementById("mode-label");
     if (!toggle) return;
     const isProgramming = window.location.pathname.startsWith("/programming");
     toggle.setAttribute(
       "href",
       isProgramming ? "/photography" : "/programming",
     );
-    const label = toggle.querySelector("span");
     if (label)
-      label.textContent = isProgramming ? "Photography" : "Programming";
+      label.textContent = isProgramming ? "Programming" : "Photography";
     const dot = toggle.querySelector("span:last-child") as HTMLElement;
     if (dot) dot.style.backgroundColor = isProgramming ? "#ffffff" : "#0a0a0a";
   }
-  document.addEventListener("astro:after-swap", updateToggle);
+  document.addEventListener("astro:after-swap", updateMode);
+  updateMode();
 </script>
 
 <style is:global>

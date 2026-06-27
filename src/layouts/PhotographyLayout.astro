@@ -9,7 +9,7 @@ const { title = "Photography" } = Astro.props;
 ---
 
 <BaseLayout title={title} mode="photography">
-  <div class="max-w-full mx-auto px-6">
+  <div class="w-full h-[calc(100vh-4rem)] relative overflow-hidden">
     <slot />
   </div>
 </BaseLayout>

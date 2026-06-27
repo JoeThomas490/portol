@@ -13,8 +13,8 @@
 
 set -e
 
-BUCKET="portol-media"
-CUSTOM_DOMAIN="media.your-domain.com"  # Change to your R2 custom domain or public URL
+BUCKET="portol-assets"
+CUSTOM_DOMAIN="assets.joenoseph.co.uk"  # Change to your R2 custom domain or public URL
 
 IMAGE_PATH="$1"
 TITLE="${2:-$(basename "$IMAGE_PATH" | sed 's/\.[^.]*$//' | tr '-_' '  ')}"
