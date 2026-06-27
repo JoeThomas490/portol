@@ -2,7 +2,7 @@
 import PhotographyLayout from "../../layouts/PhotographyLayout.astro";
 import { getCollection } from "astro:content";
 
-const photos = await getCollection("photos");
+const photos = await getCollection("photography");
 const sorted = photos.sort((a, b) => a.data.order - b.data.order);
 ---
 
@@ -75,6 +75,8 @@ const sorted = photos.sort((a, b) => a.data.order - b.data.order);
         slide.classList.remove("opacity-100");
       }
     });
+    document.getElementById("photo-counter").textContent =
+      `${index + 1} / ${total}`;
     current = index;
   }
 
