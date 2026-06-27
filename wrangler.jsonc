@@ -1,0 +1,18 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "portol",
+	"compatibility_date": "2025-06-01",
+	"compatibility_flags": ["nodejs_compat"],
+	"pages_build_output_dir": "./dist",
+	"r2_buckets": [
+		{
+			"binding": "ASSETS_BUCKET",
+			"bucket_name": "portol-assets"
+		},
+		{
+			"bucket_name": "portol-assets",
+			"binding": "portol_assets",
+			"remote": true
+		}
+	]
+}
