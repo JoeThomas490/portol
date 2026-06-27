@@ -62,32 +62,43 @@ const sorted = photos.sort((a, b) => a.data.order - b.data.order);
 </PhotographyLayout>
 
 <script define:vars={{ total: sorted.length }}>
-  let current = 0;
+  function setupPhotoViewer() {
+    let current = 0;
 
-  function show(index) {
-    const slides = document.querySelectorAll(".photo-slide");
-    slides.forEach((slide, i) => {
-      if (i === index) {
-        slide.classList.remove("opacity-0", "pointer-events-none");
-        slide.classList.add("opacity-100");
-      } else {
-        slide.classList.add("opacity-0", "pointer-events-none");
-        slide.classList.remove("opacity-100");
-      }
+    function show(index) {
+      const slides = document.querySelectorAll(".photo-slide");
+      slides.forEach((slide, i) => {
+        if (i === index) {
+          slide.classList.remove("opacity-0", "pointer-events-none");
+          slide.classList.add("opacity-100");
+        } else {
+          slide.classList.add("opacity-0", "pointer-events-none");
+          slide.classList.remove("opacity-100");
+        }
+      });
+      current = index;
+    }
+
+    const prev = document.getElementById("nav-prev");
+    const next = document.getElementById("nav-next");
+    if (!prev || !next) return;
+
+    prev.addEventListener("click", () => {
+      show((current - 1 + total) % total);
     });
-    current = index;
+
+    next.addEventListener("click", () => {
+      show((current + 1) % total);
+    });
+
+    function handleKeyDown(e) {
+      if (e.key === "ArrowLeft") show((current - 1 + total) % total);
+      if (e.key === "ArrowRight") show((current + 1) % total);
+    }
+
+    document.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
   }
 
-  document.getElementById("nav-prev").addEventListener("click", () => {
-    show((current - 1 + total) % total);
-  });
-
-  document.getElementById("nav-next").addEventListener("click", () => {
-    show((current + 1) % total);
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") show((current - 1 + total) % total);
-    if (e.key === "ArrowRight") show((current + 1) % total);
-  });
+  document.addEventListener("astro:page-load", setupPhotoViewer);
 </script>
