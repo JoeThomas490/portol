@@ -9,70 +9,34 @@ const sorted = projects.sort(
 ---
 
 <ProgrammingLayout>
-  <section class="py-12">
-    <!-- <div class="grid gap-6">
+  <section class="py-20">
+    <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1">
       {
         sorted.map((project) => (
-          <article
-            class="p-6 rounded-xl border transition-all duration-200 hover:border-white/20"
-            style={{
-              backgroundColor: "var(--color-muted)",
-              borderColor: "var(--color-border)",
-            }}
+          <a
+            href={`/programming/${project.id}`}
+            class="project-tile group relative aspect-square overflow-hidden bg-(--color-muted)"
           >
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <h2
-                  class="text-xl font-semibold mb-2"
-                  style="font-family: var(--font-heading);"
-                >
-                  {project.data.title}
-                </h2>
-                <p class="mb-3" style="color: var(--color-accent);">
-                  {project.data.description}
-                </p>
-                <div class="flex flex-wrap gap-2">
-                  {project.data.tags.map((tag) => (
-                    <span
-                      class="text-xs px-2 py-1 rounded-full"
-                      style={{
-                        backgroundColor: "var(--color-border)",
-                        color: "var(--color-accent)",
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div class="flex gap-3">
-                {project.data.repo && (
-                  <a
-                    href={project.data.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-sm underline"
-                    style="color: var(--color-accent);"
-                  >
-                    Repo
-                  </a>
-                )}
-                {project.data.url && (
-                  <a
-                    href={project.data.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-sm underline"
-                    style="color: var(--color-accent);"
-                  >
-                    Live
-                  </a>
-                )}
-              </div>
+            {project.data.heroImage && (
+              <img
+                src={project.data.heroImage}
+                alt={project.data.title}
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.25,0,0.2,1)] group-hover:scale-105"
+                loading="lazy"
+              />
+            )}
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300" />
+            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <h2
+                class="text-white text-xl md:text-2xl font-bold tracking-tight text-center px-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+                style="font-family: var(--font-heading);"
+              >
+                {project.data.title}
+              </h2>
             </div>
-          </article>
+          </a>
         ))
       }
-    </div> -->
+    </div>
   </section>
 </ProgrammingLayout>

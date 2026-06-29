@@ -10,7 +10,13 @@ const programming = defineCollection({
     url: z.string().url().optional(),
     repo: z.string().url().optional(),
     image: z.string().optional(),
+    heroImage: z.string().url().optional(),
+    role: z.string().optional(),
+    studio: z.string().optional(),
     date: z.coerce.date(),
+    dateRange: z.string().optional(),
+    platform: z.string().optional(),
+    tools: z.string().optional(),
     featured: z.boolean().default(false),
   }),
 });

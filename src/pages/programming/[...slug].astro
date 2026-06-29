@@ -1,0 +1,206 @@
+---
+import ProgrammingLayout from "../../layouts/ProgrammingLayout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("programming");
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+const meta = [
+  { label: "Role", value: project.data.role },
+  { label: "Studio", value: project.data.studio },
+  { label: "Date", value: project.data.dateRange },
+  { label: "Platform", value: project.data.platform },
+  { label: "Tools", value: project.data.tools },
+].filter((m) => m.value);
+---
+
+<ProgrammingLayout title={project.data.title}>
+  <article class="py-20">
+    {project.data.heroImage && (
+      <div class="w-full aspect-21/9 overflow-hidden rounded-lg mb-10">
+        <img
+          src={project.data.heroImage}
+          alt={project.data.title}
+          class="w-full h-full object-cover"
+        />
+      </div>
+    )}
+
+    <div class="mb-12">
+      <span
+        class="text-xs uppercase tracking-[0.2em] mb-2 block"
+        style="color: var(--color-accent);"
+      >
+        Project:
+      </span>
+      <h1
+        class="text-3xl md:text-5xl font-bold tracking-tight mb-6"
+        style="font-family: var(--font-heading);"
+      >
+        {project.data.title}
+      </h1>
+
+      {meta.length > 0 && (
+        <dl class="space-y-1 text-sm" style="color: var(--color-accent);">
+          {meta.map(({ label, value }) => (
+            <div class="flex gap-2">
+              <dt class="font-semibold" style="color: var(--color-text);">{label}:</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+
+    <div class="project-prose">
+      <Content />
+    </div>
+
+    <div class="mt-16 pt-8 flex gap-4" style="border-top: 1px solid var(--color-border);">
+      {project.data.repo && (
+        <a
+          href={project.data.repo}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
+          style="background-color: var(--color-muted); color: var(--color-text); border: 1px solid var(--color-border);"
+        >
+          View Repository
+        </a>
+      )}
+      {project.data.url && (
+        <a
+          href={project.data.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
+          style="background-color: var(--color-muted); color: var(--color-text); border: 1px solid var(--color-border);"
+        >
+          View Live
+        </a>
+      )}
+      <a
+        href="/programming"
+        class="text-sm px-4 py-2 rounded-lg transition-colors duration-200 ml-auto"
+        style="color: var(--color-accent);"
+      >
+        &larr; All Projects
+      </a>
+    </div>
+  </article>
+</ProgrammingLayout>
+
+<style>
+  .project-prose :global(h2) {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+  }
+
+  .project-prose :global(h3) {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
+  }
+
+  .project-prose :global(p) {
+    color: var(--color-accent);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+    max-width: 72ch;
+  }
+
+  .project-prose :global(ul),
+  .project-prose :global(ol) {
+    color: var(--color-accent);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+    max-width: 72ch;
+  }
+
+  .project-prose :global(li) {
+    margin-bottom: 0.25rem;
+  }
+
+  .project-prose :global(ul) {
+    list-style-type: disc;
+  }
+
+  .project-prose :global(ol) {
+    list-style-type: decimal;
+  }
+
+  .project-prose :global(img) {
+    width: 100%;
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-prose :global(video) {
+    width: 100%;
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-prose :global(a) {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .project-prose :global(a:hover) {
+    opacity: 0.7;
+  }
+
+  .project-prose :global(blockquote) {
+    border-left: 3px solid var(--color-border);
+    padding-left: 1rem;
+    color: var(--color-accent);
+    font-style: italic;
+    margin: 1.5rem 0;
+  }
+
+  .project-prose :global(code) {
+    font-family: var(--font-heading);
+    font-size: 0.875em;
+    background-color: var(--color-muted);
+    padding: 0.15em 0.4em;
+    border-radius: 0.25rem;
+  }
+
+  .project-prose :global(pre) {
+    background-color: var(--color-muted);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  .project-prose :global(pre code) {
+    background: none;
+    padding: 0;
+  }
+
+  .project-prose :global(hr) {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 2.5rem 0;
+  }
+</style>
