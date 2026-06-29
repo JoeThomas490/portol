@@ -7,7 +7,7 @@ role: "Gameplay Engineer, Design"
 date: 2018-01-12
 dateRange: "2018"
 platform: "PC - Oculus"
-tools: "Unity - C#"
+tools: ["Unity", "C#"]
 ---
 
 ## Gameplay Demo

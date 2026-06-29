@@ -1,6 +1,7 @@
 ---
 import ProgrammingLayout from "../../layouts/ProgrammingLayout.astro";
 import { getCollection, render } from "astro:content";
+import ExternalLink from "@lucide/astro/icons/external-link";
 
 export async function getStaticPaths() {
   const projects = await getCollection("programming");
@@ -18,7 +19,6 @@ const meta = [
   { label: "Studio", value: project.data.studio },
   { label: "Date", value: project.data.dateRange },
   { label: "Platform", value: project.data.platform },
-  { label: "Tools", value: project.data.tools },
 ].filter((m) => m.value);
 ---
 
@@ -41,12 +41,38 @@ const meta = [
       >
         Project:
       </span>
-      <h1
-        class="text-3xl md:text-5xl font-bold tracking-tight mb-6"
-        style="font-family: var(--font-heading);"
-      >
-        {project.data.title}
-      </h1>
+      <div class="flex items-start justify-between gap-4 mb-6">
+        <h1
+          class="text-3xl md:text-5xl font-bold tracking-tight"
+          style="font-family: var(--font-heading);"
+        >
+          {project.data.title}
+        </h1>
+        <div class="flex gap-3 shrink-0 pt-2">
+          {project.data.repo && (
+            <a
+              href={project.data.repo}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
+              style="background-color: var(--color-muted); color: var(--color-text); border: 1px solid var(--color-border);"
+            >
+              Repository <ExternalLink size={14} class="inline ml-1" />
+            </a>
+          )}
+          {project.data.url && (
+            <a
+              href={project.data.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
+              style="background-color: var(--color-muted); color: var(--color-text); border: 1px solid var(--color-border);"
+            >
+              Live <ExternalLink size={14} class="inline ml-1" />
+            </a>
+          )}
+        </div>
+      </div>
 
       {meta.length > 0 && (
         <dl class="space-y-1 text-sm" style="color: var(--color-accent);">
@@ -58,38 +84,29 @@ const meta = [
           ))}
         </dl>
       )}
+
+      {project.data.tools.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-4">
+          {project.data.tools.map((tool: string) => (
+            <span
+              class="text-xs px-3 py-1 rounded-full"
+              style="background-color: var(--color-muted); color: var(--color-accent); border: 1px solid var(--color-border);"
+            >
+              {tool}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
 
     <div class="project-prose">
       <Content />
     </div>
 
-    <div class="mt-16 pt-8 flex gap-4" style="border-top: 1px solid var(--color-border);">
-      {project.data.repo && (
-        <a
-          href={project.data.repo}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
-          style="background-color: var(--color-muted); color: var(--color-text); border: 1px solid var(--color-border);"
-        >
-          View Repository
-        </a>
-      )}
-      {project.data.url && (
-        <a
-          href={project.data.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
-          style="background-color: var(--color-muted); color: var(--color-text); border: 1px solid var(--color-border);"
-        >
-          View Live
-        </a>
-      )}
+    <div class="mt-16 pt-8" style="border-top: 1px solid var(--color-border);">
       <a
         href="/programming"
-        class="text-sm px-4 py-2 rounded-lg transition-colors duration-200 ml-auto"
+        class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
         style="color: var(--color-accent);"
       >
         &larr; All Projects

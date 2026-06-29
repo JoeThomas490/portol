@@ -8,7 +8,7 @@ role: "Developer"
 date: 2026-06-26
 dateRange: "2026"
 platform: "Web"
-tools: "Astro - React - Tailwind - Cloudflare Pages"
+tools: ["Astro", "React", "Tailwind", "Cloudflare Pages"]
 ---
 
 <!-- ## Description

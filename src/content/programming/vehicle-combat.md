@@ -8,7 +8,7 @@ studio: "Firesprite"
 date: 2024-01-01
 dateRange: "2022–2024"
 platform: "PC - PS5"
-tools: "UE5 - C++ - Blueprints - Figma"
+tools: ["UE5", "C++", "Blueprints", "Figma"]
 ---
 
 ## Description
