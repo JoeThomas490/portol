@@ -19,7 +19,7 @@ const photography = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/photography' }),
   schema: z.object({
     title: z.string(),
-    collection: z.string().optional(),
+    collection: z.string(),
     alt: z.string(),
     caption: z.string().optional(),
     src: z.string().url(),

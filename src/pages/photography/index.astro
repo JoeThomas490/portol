@@ -1,42 +1,119 @@
 ---
 import PhotographyLayout from "../../layouts/PhotographyLayout.astro";
 import { getCollection } from "astro:content";
+import ChevronLeft from "@lucide/astro/icons/chevron-left";
 
 const photos = await getCollection("photography");
-const sorted = photos.sort((a, b) => a.data.order - b.data.order);
+
+const collectionMap = new Map<string, typeof photos>();
+for (const photo of photos) {
+  const name = photo.data.collection;
+  if (!collectionMap.has(name)) collectionMap.set(name, []);
+  collectionMap.get(name)!.push(photo);
+}
+
+for (const [, items] of collectionMap) {
+  items.sort((a, b) => a.data.order - b.data.order);
+}
+
+const collectionNames = [...collectionMap.keys()].sort();
+const collectionsData = collectionNames.map((name) => ({
+  name,
+  photos: collectionMap.get(name)!.map((p) => ({
+    src: p.data.src,
+    alt: p.data.alt,
+    title: p.data.title,
+  })),
+}));
 ---
 
 <PhotographyLayout>
+  <!-- Sidebar -->
+  <aside
+    id="collections-sidebar"
+    class="h-full overflow-hidden z-5 flex flex-col w-[220px] min-w-[220px] transition-all duration-300 ease-in-out mt-12 pb-80"
+    style="background-color: var(--color-bg);"
+  >
+    <!-- Title bar — always visible, acts as toggle -->
+    <button
+      id="sidebar-toggle"
+      class="flex items-center gap-2 px-5 py-4 w-full bg-transparent border-none cursor-pointer"
+      style="color: var(--color-accent);"
+    >
+      <h2
+        id="active-collection-name"
+        class="text-[0.65rem] font-bold tracking-widest uppercase m-0"
+      >
+        {collectionNames[0]}
+      </h2>
+      <span
+        id="sidebar-chevron"
+        class="flex items-center transition-transform duration-300"
+      >
+        <ChevronLeft size={12} />
+      </span>
+    </button>
+
+    <div class="flex flex-col justify-start flex-1 min-h-0">
+      <!-- Collection list -->
+      <nav
+        id="collections-nav"
+        class="flex flex-col overflow-hidden transition-all duration-300 ease-in-out opacity-100 max-h-[500px]"
+      >
+        {
+          collectionsData.map((col, ci) => (
+            <div class="last:border-b-0" data-collection-index={ci}>
+              <button
+                class:list={[
+                  "collection-header flex items-center justify-between w-full px-6 py-2.5 bg-transparent border-none cursor-pointer text-[0.8125rem] font-medium transition-colors duration-150",
+                  ci === 0 && "is-active",
+                ]}
+                style="color: var(--color-text);"
+                data-collection={ci}
+              >
+                <span>{col.name}</span>
+              </button>
+            </div>
+          ))
+        }
+      </nav>
+
+      <a
+        href="/photography/about"
+        class="sidebar-about-link block px-5 py-4 text-[0.65rem] font-bold tracking-widest no-underline uppercase transition-colors duration-150"
+        style="color: var(--color-accent);"
+      >
+        About
+      </a>
+    </div>
+  </aside>
+
+  <!-- Photo viewer -->
   <div
     id="photo-viewer"
-    class="w-full h-full relative flex items-center justify-center"
+    class="flex-1 h-full relative flex items-center justify-center overflow-hidden"
   >
     {
-      sorted.map((photo, i) => (
-        <figure
-          class:list={[
-            "photo-slide absolute inset-0 flex items-center justify-center transition-opacity duration-500",
-            i === 0 ? "opacity-100" : "opacity-0 pointer-events-none",
-          ]}
-          data-index={i}
-        >
-          <img
-            src={photo.data.src}
-            alt={photo.data.alt}
-            class="max-w-full max-h-full object-contain"
-          />
-          {/* {photo.data.caption && (
-          <figcaption class="absolute bottom-6 left-1/2 -translate-x-1/2 text-center opacity-0 transition-opacity duration-300" id={`caption-${i}`}>
-            <p class="text-sm" style="color: var(--color-text);">{photo.data.caption}</p>
-            {photo.data.camera && (
-              <p class="text-xs mt-1" style="color: var(--color-accent);">
-                {photo.data.camera}{photo.data.lens ? ` · ${photo.data.lens}` : ''}
-              </p>
-            )}
-          </figcaption>
-        )} */}
-        </figure>
-      ))
+      collectionsData.map((col, ci) =>
+        col.photos.map((photo, pi) => (
+          <figure
+            class:list={[
+              "photo-slide absolute inset-0 flex items-center justify-center transition-opacity duration-500",
+              ci === 0 && pi === 0
+                ? "opacity-100"
+                : "opacity-0 pointer-events-none",
+            ]}
+            data-collection={ci}
+            data-photo={pi}
+          >
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              class="max-w-full max-h-full object-contain"
+            />
+          </figure>
+        )),
+      )
     }
 
     <button
@@ -44,9 +121,9 @@ const sorted = photos.sort((a, b) => a.data.order - b.data.order);
       class="absolute left-0 top-0 w-1/3 h-full z-10 cursor-w-resize opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-start pl-6"
       aria-label="Previous photo"
     >
-      <span class="text-3xl select-none" style="color: var(--color-accent);"
-        >&#8249;</span
-      >
+      <span class="text-3xl select-none" style="color: var(--color-accent);">
+        &#8249;
+      </span>
     </button>
 
     <button
@@ -54,21 +131,63 @@ const sorted = photos.sort((a, b) => a.data.order - b.data.order);
       class="absolute right-0 top-0 w-1/3 h-full z-10 cursor-e-resize opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-end pr-6"
       aria-label="Next photo"
     >
-      <span class="text-3xl select-none" style="color: var(--color-accent);"
-        >&#8250;</span
-      >
+      <span class="text-3xl select-none" style="color: var(--color-accent);">
+        &#8250;
+      </span>
     </button>
   </div>
 </PhotographyLayout>
 
-<script define:vars={{ total: sorted.length }}>
-  function setupPhotoViewer() {
-    let current = 0;
+<style>
+  .collection-header:hover {
+    background-color: var(--color-muted);
+  }
 
-    function show(index) {
-      const slides = document.querySelectorAll(".photo-slide");
-      slides.forEach((slide, i) => {
-        if (i === index) {
+  .collection-header.is-active span {
+    font-weight: 600;
+  }
+
+  .sidebar-about-link:hover {
+    color: var(--color-text);
+  }
+
+  #collections-sidebar.collapsed {
+    width: auto;
+    min-width: auto;
+  }
+
+  #collections-sidebar.collapsed #collections-nav {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  #collections-sidebar.collapsed #sidebar-chevron {
+    transform: rotate(180deg);
+  }
+</style>
+
+<script define:vars={{ collectionsData }}>
+  function setupPhotoViewer() {
+    let currentCollection = 0;
+    let currentPhoto = 0;
+
+    const sidebar = document.getElementById("collections-sidebar");
+    const toggle = document.getElementById("sidebar-toggle");
+    const slides = document.querySelectorAll(".photo-slide");
+    const headers = document.querySelectorAll(".collection-header");
+    const activeLabel = document.getElementById("active-collection-name");
+
+    if (toggle && sidebar) {
+      toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
+      });
+    }
+
+    function showPhoto(ci, pi) {
+      slides.forEach((slide) => {
+        const sc = Number(slide.getAttribute("data-collection"));
+        const sp = Number(slide.getAttribute("data-photo"));
+        if (sc === ci && sp === pi) {
           slide.classList.remove("opacity-0", "pointer-events-none");
           slide.classList.add("opacity-100");
         } else {
@@ -76,24 +195,52 @@ const sorted = photos.sort((a, b) => a.data.order - b.data.order);
           slide.classList.remove("opacity-100");
         }
       });
-      current = index;
+
+      headers.forEach((h) => {
+        const hc = Number(h.getAttribute("data-collection"));
+        h.classList.toggle("is-active", hc === ci);
+      });
+
+      if (activeLabel) {
+        activeLabel.textContent = collectionsData[ci].name;
+      }
+
+      currentCollection = ci;
+      currentPhoto = pi;
     }
+
+    headers.forEach((header) => {
+      header.addEventListener("click", () => {
+        const ci = Number(header.getAttribute("data-collection"));
+        if (ci !== currentCollection) {
+          showPhoto(ci, 0);
+        }
+      });
+    });
 
     const prev = document.getElementById("nav-prev");
     const next = document.getElementById("nav-next");
-    if (!prev || !next) return;
 
-    prev.addEventListener("click", () => {
-      show((current - 1 + total) % total);
-    });
+    if (prev) {
+      prev.addEventListener("click", () => {
+        const total = collectionsData[currentCollection].photos.length;
+        showPhoto(currentCollection, (currentPhoto - 1 + total) % total);
+      });
+    }
 
-    next.addEventListener("click", () => {
-      show((current + 1) % total);
-    });
+    if (next) {
+      next.addEventListener("click", () => {
+        const total = collectionsData[currentCollection].photos.length;
+        showPhoto(currentCollection, (currentPhoto + 1) % total);
+      });
+    }
 
     function handleKeyDown(e) {
-      if (e.key === "ArrowLeft") show((current - 1 + total) % total);
-      if (e.key === "ArrowRight") show((current + 1) % total);
+      const total = collectionsData[currentCollection].photos.length;
+      if (e.key === "ArrowLeft")
+        showPhoto(currentCollection, (currentPhoto - 1 + total) % total);
+      if (e.key === "ArrowRight")
+        showPhoto(currentCollection, (currentPhoto + 1) % total);
     }
 
     document.removeEventListener("keydown", handleKeyDown);
