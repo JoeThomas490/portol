@@ -1,10 +1,9 @@
 ---
-title: "Portfolio"
+title: "Portfolio Site"
 description: "A multi-modal portfolio site built with Astro, React, and Cloudflare Pages."
 tags: ["astro", "react", "cloudflare", "tailwind"]
 repo: "https://github.com/joethomas/portol"
 heroImage: "https://assets.joenoseph.co.uk/programming/portol/portol.png"
-role: "Developer"
 date: 2026-06-26
 dateRange: "2026"
 platform: "Web"
