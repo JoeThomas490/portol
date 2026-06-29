@@ -1,5 +1,43 @@
 ---
 import { ViewTransitions } from "astro:transitions";
+import Camera from "@lucide/astro/icons/camera";
+import CodeXml from "@lucide/astro/icons/code-xml";
+import Palette from "@lucide/astro/icons/palette";
+
+const modes = [
+  {
+    name: "Photography",
+    href: "/photography",
+    bg: "bg-stone-100",
+    text: "text-stone-900",
+    hoverBg: "hover:bg-stone-200",
+    accent: "bg-stone-900",
+    image: "https://assets.joenoseph.co.uk/CFTest_2.jpg",
+    icon: Camera,
+  },
+  {
+    name: "Programming",
+    href: "/programming",
+    bg: "bg-neutral-900",
+    text: "text-white",
+    hoverBg: "hover:bg-neutral-800",
+    accent: "bg-white",
+    image:
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
+    icon: CodeXml,
+  },
+  {
+    name: "Art",
+    href: null,
+    bg: "bg-amber-50",
+    text: "text-amber-900",
+    hoverBg: "hover:bg-amber-100",
+    accent: "bg-amber-900",
+    image:
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800&q=80",
+    icon: Palette,
+  },
+];
 ---
 
 <!doctype html>
@@ -12,40 +50,77 @@ import { ViewTransitions } from "astro:transitions";
     <title>Portfolio | Joe Thomas</title>
     <ViewTransitions />
   </head>
-  <body class="min-h-dvh flex items-center justify-center bg-neutral-100">
-    <div class="flex flex-col items-center gap-12">
-      <h1
-        class="text-5xl md:text-7xl font-bold tracking-tighter text-neutral-900"
-      >
-        Joenoseph
-      </h1>
-      <p class="text-lg text-neutral-500 max-w-md text-center">
-        Choose a mode to explore
-      </p>
-      <div class="flex gap-6">
-        <a
-          href="/photography"
-          class="group relative flex flex-col items-center gap-3 px-10 py-8 rounded-2xl border border-neutral-200 bg-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-        >
-          <span
-            class="w-6 h-6 rounded-full bg-white border-2 border-neutral-300 group-hover:border-neutral-900 transition-colors"
-          ></span>
-          <span class="text-lg font-medium text-neutral-900">Photography</span>
-        </a>
-        <a
-          href="/programming"
-          class="group relative flex flex-col items-center gap-3 px-10 py-8 rounded-2xl border border-neutral-700 bg-neutral-900 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-        >
-          <span
-            class="w-6 h-6 rounded-full bg-neutral-900 border-2 border-neutral-600 group-hover:border-white transition-colors"
-          ></span>
-          <span class="text-lg font-medium text-white">Programming</span>
-        </a>
+  <body class="h-dvh flex flex-col overflow-hidden bg-neutral-950">
+    <nav class="fixed top-0 left-0 right-0 z-50 p-6">
+      <div class="flex items-center justify-between">
+        <div class="flex flex-col items-start gap-0">
+          <span class="text-lg font-bold tracking-tight text-white">
+            Joe Thomas
+          </span>
+        </div>
       </div>
+    </nav>
+
+    <div class="flex flex-1 min-h-0">
+      {
+        modes.map((mode) => {
+          const Tag = mode.href ? "a" : "div";
+          const Icon = mode.icon;
+          return (
+            <Tag
+              href={mode.href}
+              class:list={[
+                "bookshelf-slice group relative flex flex-col items-center justify-center gap-4 overflow-hidden",
+                "transition-all duration-500 ease-[cubic-bezier(0.25,0,0.2,1)]",
+                "border-r border-neutral-800 last:border-r-0",
+                mode.href ? "cursor-pointer" : "cursor-default",
+                mode.bg,
+                mode.hoverBg,
+              ]}
+            >
+              <div
+                class="absolute inset-0 bg-cover bg-center grayscale group-hover:grayscale-0 transition-[filter] duration-700 ease-[cubic-bezier(0.25,0,0.2,1)]"
+                style={`background-image: url('${mode.image}');`}
+              />
+              <div class="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-500" />
+
+              <span class="relative z-10 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] opacity-60 group-hover:opacity-100 transition-opacity duration-500">
+                <Icon size={32} />
+              </span>
+
+              <span
+                class:list={[
+                  "writing-vertical relative z-10 text-4xl md:text-6xl font-black tracking-wide select-none",
+                  "text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]",
+                  "transition-opacity duration-500",
+                ]}
+              >
+                {mode.name}
+              </span>
+
+              <span class="absolute z-10 bottom-8 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            </Tag>
+          );
+        })
+      }
     </div>
   </body>
 </html>
 
 <style is:global>
   @import "../styles/global.css";
+
+  .writing-vertical {
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+  }
+
+  .bookshelf-slice {
+    flex: 1 1 0%;
+  }
+
+  .bookshelf-slice:hover {
+    flex: 3 1 0%;
+  }
 </style>
