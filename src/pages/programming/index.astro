@@ -63,6 +63,15 @@ const sorted = projects.sort(
                 {project.data.title}
               </h2>
             </div>
+            {project.data.tools && project.data.tools.length > 0 && (
+              <div class="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5 z-10">
+                {project.data.tools.slice(0, 3).map((tool: string) => (
+                  <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-black/50 text-white/90 backdrop-blur-sm border border-white/10">
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            )}
           </a>
         ))
       }
