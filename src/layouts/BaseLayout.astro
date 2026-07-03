@@ -1,7 +1,6 @@
 ---
 import { ViewTransitions } from "astro:transitions";
-import Camera from "@lucide/astro/icons/camera";
-import CodeXml from "@lucide/astro/icons/code-xml";
+import ModeBubble from "../components/ModeBubble.astro";
 
 interface Props {
   title: string;
@@ -42,47 +41,7 @@ const { title, mode } = Astro.props;
       </div>
     </nav>
 
-    <div
-      id="mode-bubble"
-      transition:persist
-      class="group fixed bottom-6 right-6 z-50 flex flex-col items-center"
-    >
-      <div
-        class="flex flex-col gap-0.5 p-1.5 mb-2 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)] origin-bottom invisible scale-y-0 translate-y-2.5 opacity-0 pointer-events-none transition-[opacity,transform,visibility] duration-400 ease-mode group-hover:visible group-hover:scale-y-100 group-hover:translate-y-0 group-hover:opacity-100 group-hover:pointer-events-auto group-hover:delay-0 [transition-delay:0s,0s,0.4s] group-hover:[transition-delay:0s,0s,0s]"
-        style="background-color: var(--color-muted); border: 1px solid var(--color-border);"
-      >
-        <a
-          href="/photography"
-          data-astro-prefetch="hover"
-          class="mode-option flex items-center gap-2.5 py-2.5 px-4 rounded-full whitespace-nowrap no-underline transition-[background-color,opacity] duration-150 ease-linear hover:bg-(--color-invert)"
-          data-mode="photography"
-        >
-          <Camera size={18} />
-          <!-- <span class="text-sm font-medium">Photography</span> -->
-        </a>
-        <a
-          href="/programming"
-          data-astro-prefetch="hover"
-          class="mode-option flex items-center gap-2.5 py-2.5 px-4 rounded-full whitespace-nowrap no-underline transition-[background-color,opacity] duration-150 ease-linear hover:bg-(--color-invert)"
-          data-mode="programming"
-        >
-          <CodeXml size={18} />
-          <!-- <span class="text-sm font-medium">Programming</span> -->
-        </a>
-      </div>
-      <div
-        class="relative z-2 flex items-center justify-center w-12 h-12 rounded-full shrink-0 cursor-default shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
-        id="mode-bubble-icon"
-        style="background-color: var(--color-muted); border: 1px solid var(--color-border); color: var(--color-text);"
-      >
-        <span id="icon-camera" class="hidden items-center justify-center"
-          ><Camera size={22} /></span
-        >
-        <span id="icon-code" class="hidden items-center justify-center"
-          ><CodeXml size={22} /></span
-        >
-      </div>
-    </div>
+    <ModeBubble />
 
     <main class="pt-4">
       <slot />
@@ -90,35 +49,6 @@ const { title, mode } = Astro.props;
   </body>
 </html>
 
-<script>
-  function updateMode() {
-    const label = document.getElementById("mode-label");
-    const isProgramming = window.location.pathname.startsWith("/programming");
-    const currentMode = isProgramming ? "programming" : "photography";
-
-    if (label)
-      label.textContent = isProgramming ? "Programming" : "Photography";
-
-    const iconCamera = document.getElementById("icon-camera");
-    const iconCode = document.getElementById("icon-code");
-    if (iconCamera && iconCode) {
-      iconCamera.style.display =
-        currentMode === "photography" ? "flex" : "none";
-      iconCode.style.display = currentMode === "programming" ? "flex" : "none";
-    }
-
-    document.querySelectorAll(".mode-option").forEach((opt) => {
-      const el = opt as HTMLElement;
-      if (el.dataset.mode === currentMode) {
-        el.classList.add("opacity-40", "pointer-events-none");
-      } else {
-        el.classList.remove("opacity-40", "pointer-events-none");
-      }
-    });
-  }
-  document.addEventListener("astro:after-swap", updateMode);
-  updateMode();
-</script>
 
 <style is:global>
   @import "../styles/global.css";
