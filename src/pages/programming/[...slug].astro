@@ -1,7 +1,7 @@
 ---
-import ProgrammingLayout from "../../layouts/ProgrammingLayout.astro";
 import { getCollection, render } from "astro:content";
 import ExternalLink from "@lucide/astro/icons/external-link";
+import DeveloperLayout from "../../layouts/DeveloperLayout.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("programming");
@@ -22,17 +22,19 @@ const meta = [
 ].filter((m) => m.value);
 ---
 
-<ProgrammingLayout title={project.data.title}>
+<DeveloperLayout mode="programming">
   <article class="py-20">
-    {project.data.heroImage && (
-      <div class="w-full aspect-21/9 overflow-hidden rounded-lg mb-10">
-        <img
-          src={project.data.heroImage}
-          alt={project.data.title}
-          class="w-full h-full object-cover"
-        />
-      </div>
-    )}
+    {
+      project.data.heroImage && (
+        <div class="w-full aspect-21/9 overflow-hidden rounded-lg mb-10">
+          <img
+            src={project.data.heroImage}
+            alt={project.data.title}
+            class="w-full h-full object-cover"
+          />
+        </div>
+      )
+    }
 
     <div class="mb-12">
       <span
@@ -49,54 +51,64 @@ const meta = [
           {project.data.title}
         </h1>
         <div class="flex gap-3 shrink-0 pt-2">
-          {project.data.repo && (
-            <a
-              href={project.data.repo}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
-              style="background-color: var(--color-muted); color: var(--color-text); border: 1px solid var(--color-border);"
-            >
-              Repository <ExternalLink size={14} class="inline ml-1" />
-            </a>
-          )}
-          {project.data.url && (
-            <a
-              href={project.data.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
-              style="background-color: var(--color-muted); color: var(--color-text); border: 1px solid var(--color-border);"
-            >
-              Live <ExternalLink size={14} class="inline ml-1" />
-            </a>
-          )}
+          {
+            project.data.repo && (
+              <a
+                href={project.data.repo}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
+                style="background-color: var(--color-muted); color: var(--color-text); border: 1px solid var(--color-border);"
+              >
+                Repository <ExternalLink size={14} class="inline ml-1" />
+              </a>
+            )
+          }
+          {
+            project.data.url && (
+              <a
+                href={project.data.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
+                style="background-color: var(--color-muted); color: var(--color-text); border: 1px solid var(--color-border);"
+              >
+                Live <ExternalLink size={14} class="inline ml-1" />
+              </a>
+            )
+          }
         </div>
       </div>
 
-      {meta.length > 0 && (
-        <dl class="space-y-1 text-sm" style="color: var(--color-accent);">
-          {meta.map(({ label, value }) => (
-            <div class="flex gap-2">
-              <dt class="font-semibold" style="color: var(--color-text);">{label}:</dt>
-              <dd>{value}</dd>
-            </div>
-          ))}
-        </dl>
-      )}
+      {
+        meta.length > 0 && (
+          <dl class="space-y-1 text-sm" style="color: var(--color-accent);">
+            {meta.map(({ label, value }) => (
+              <div class="flex gap-2">
+                <dt class="font-semibold" style="color: var(--color-text);">
+                  {label}:
+                </dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
 
-      {project.data.tools.length > 0 && (
-        <div class="flex flex-wrap gap-2 mt-4">
-          {project.data.tools.map((tool: string) => (
-            <span
-              class="text-xs px-3 py-1 rounded-full"
-              style="background-color: var(--color-muted); color: var(--color-accent); border: 1px solid var(--color-border);"
-            >
-              {tool}
-            </span>
-          ))}
-        </div>
-      )}
+      {
+        project.data.tools.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-4">
+            {project.data.tools.map((tool: string) => (
+              <span
+                class="text-xs px-3 py-1 rounded-full"
+                style="background-color: var(--color-muted); color: var(--color-accent); border: 1px solid var(--color-border);"
+              >
+                {tool}
+              </span>
+            ))}
+          </div>
+        )
+      }
     </div>
 
     <div class="project-prose">
@@ -113,7 +125,7 @@ const meta = [
       </a>
     </div>
   </article>
-</ProgrammingLayout>
+</DeveloperLayout>
 
 <style>
   .project-prose :global(h2) {

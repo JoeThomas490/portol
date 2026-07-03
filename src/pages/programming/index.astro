@@ -1,7 +1,8 @@
 ---
 import ProgrammingLayout from "../../layouts/ProgrammingLayout.astro";
+import DeveloperLayout from "../../layouts/DeveloperLayout.astro";
 import { getCollection } from "astro:content";
-import User from "@lucide/astro/icons/user";
+import Download from "@lucide/astro/icons/download";
 
 const projects = await getCollection("programming");
 const sorted = projects.sort(
@@ -9,37 +10,88 @@ const sorted = projects.sort(
 );
 ---
 
-<ProgrammingLayout>
-  <section class="py-20">
-    <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1">
+<DeveloperLayout mode="programming">
+  <section class="pt-20">
+    <div class="w-full flex flex-row gap-8">
+      <img
+        src="https://assets.joenoseph.co.uk/me/me_002.jpg"
+        alt="Joe Thomas"
+        class="h-40 w-fullobject-cover rounded-2xl"
+      />
+      <div class="h-full flex flex-col gap-y-2 w-full">
+        <h1 class="text-4xl md:text-5xl font-bold">Hey I'm Joe Thomas!</h1>
+        <p class="text-lg md:text-xl">
+          I'm a software engineer and co-founder of Labbo.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section class="pt-4">
+    <div class="w-full flex flex-row gap-2">
       <a
-        href="/programming/about"
-        class="project-tile group relative aspect-square rounded-2xl overflow-hidden bg-(--color-muted) flex items-center justify-center"
+        href="https://github.com/joethomas490"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
+        aria-label="GitHub"
       >
-        <div
-          class="absolute inset-0 bg-(--color-muted) group-hover:bg-(--color-border) transition-colors duration-300"
-        >
-          <img
-            src="https://assets.joenoseph.co.uk/me/me_002.jpg"
-            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.25,0,0.2,1)] group-hover:scale-105"
-            loading="lazy"
-          />
-        </div>
-        <div
-          class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300"
-        >
-        </div>
-        <div
-          class="relative z-10 flex flex-col items-center gap-3 text-center px-6"
-        >
-          <h2
-            class="text-xl md:text-2xl font-bold tracking-tight opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style="font-family: var(--font-heading); color: var(--color-text);"
-          >
-            About Me
-          </h2>
-        </div>
+        <img
+          src="https://cdn.simpleicons.org/github/ffffff"
+          alt="GitHub"
+          class="w-5 h-5"
+        />
       </a>
+      <a
+        href="https://www.linkedin.com/in/jmthomas96/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
+        aria-label="LinkedIn"
+      >
+        <img
+          src="https://cdn.simpleicons.org/linkedin/ffffff"
+          alt="LinkedIn"
+          class="w-5 h-5"
+        />
+      </a>
+      <a
+        href="https://instagram.com/joenoseph"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
+        aria-label="Instagram"
+      >
+        <img
+          src="https://cdn.simpleicons.org/instagram/ffffff"
+          alt="Instagram"
+          class="w-5 h-5"
+        />
+      </a>
+      <a
+        href="mailto:joe_thomas490@hotmail.com"
+        class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
+        aria-label="Email"
+      >
+        <img
+          src="https://cdn.simpleicons.org/gmail/ffffff"
+          alt="Email"
+          class="w-5 h-5"
+        />
+      </a>
+      <a
+        href="https://assets.joenoseph.co.uk/cv/cv.pdf"
+        download
+        class="flex-1 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center gap-2 font-medium text-sm"
+        aria-label="Download CV"
+      >
+        <Download class="w-5 h-5" />
+        Download CV
+      </a>
+    </div>
+  </section>
+  <section class="py-12">
+    <h2 class="text-2xl font-bold mb-4">Projects</h2>
+    <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
       {
         sorted.map((project) => (
           <a
@@ -77,4 +129,4 @@ const sorted = projects.sort(
       }
     </div>
   </section>
-</ProgrammingLayout>
+</DeveloperLayout>
