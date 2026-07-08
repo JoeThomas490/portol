@@ -2,7 +2,7 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const programming = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/programming' }),
+  loader: glob({ pattern: '**/*.md', base: './src/content/programming-projects' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -21,8 +21,8 @@ const programming = defineCollection({
   }),
 });
 
-const workExperience = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/programming/work-experience' }),
+const programmingExperience = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/programming-experience' }),
   schema: z.object({
     role: z.string(),
     studio: z.string(),
@@ -50,4 +50,4 @@ const photography = defineCollection({
   }),
 });
 
-export const collections = { programming, photography, workExperience };
+export const collections = { programming, programmingExperience, photography };

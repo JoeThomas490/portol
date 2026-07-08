@@ -11,7 +11,7 @@ import ProjectTile from "../../components/programming/ProjectTile.astro";
 import WorkExperienceCard from "../../components/programming/WorkExperienceCard.astro";
 
 const projects = await getCollection("programming");
-const workExperience = await getCollection("workExperience");
+const workExperience = await getCollection("programmingExperience");
 const sortedExperience = workExperience.sort(
   (a, b) => a.data.order - b.data.order,
 );
