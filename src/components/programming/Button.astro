@@ -16,11 +16,44 @@ const isExternal = href.startsWith("http") || href.startsWith("mailto:");
   {...isExternal && { target: "_blank", rel: "noopener noreferrer" }}
   {...download && { download: true }}
   class:list={[
-    "h-12 w-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center gap-2 font-medium text-sm",
+    "gradient-ring relative h-12 w-12 rounded-lg bg-white/2 backdrop-blur-3xl transition-all duration-200 flex items-center justify-center gap-2 font-medium text-sm",
     className,
   ]}
   aria-label={label}
 >
-  {icon && <img src={icon} alt={label} class="w-5 h-5" />}
+  {icon && <img src={icon} alt={label} class="w-6 h-6" />}
   <slot />
 </a>
+
+<style>
+  .gradient-ring {
+    --border-width: 2px;
+    --gradient: linear-gradient(to top, rgb(193, 168, 237), #7c3aed);
+    --gradient-hover: linear-gradient(to top, rgb(193, 168, 237), #a855f7);
+  }
+
+  .gradient-ring::before {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--border-width));
+    border-radius: calc(var(--tw-radius-lg, 0.5rem) + var(--border-width));
+    background: var(--gradient);
+    opacity: 0.4;
+    transition: opacity 0.2s;
+    z-index: -1;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: var(--border-width);
+  }
+
+  .gradient-ring:hover::before {
+    background: var(--gradient-hover);
+    opacity: 1;
+  }
+</style>
