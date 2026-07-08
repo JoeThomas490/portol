@@ -2,6 +2,7 @@
 import { ViewTransitions } from "astro:transitions";
 import ModeBubble from "../components/ModeBubble.astro";
 import ShaderBackground from "../components/ShaderBackground.astro";
+import InteractiveBackground from "../components/programming/InteractiveBackground";
 
 interface Props {
   mode: "photography" | "programming";
@@ -31,9 +32,10 @@ const { mode } = Astro.props;
     style={`background-color: var(--color-bg); color: var(--color-text);`}
   >
     <!-- <ShaderBackground /> -->
+    <InteractiveBackground client:only="react" />
     <ModeBubble />
 
-    <main class="pt-4 max-w-5xl mx-auto px-6">
+    <main class="pt-4 max-w-5xl mx-auto px-6 relative z-10">
       <slot />
     </main>
   </body>
