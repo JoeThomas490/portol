@@ -30,7 +30,7 @@ const sorted = projects.sort(
         <img
           src="https://assets.joenoseph.co.uk/me/me_002_square.webp"
           alt="Joe Thomas"
-          class="h-40 w-40 object-cover rounded-full ring-4 ring-white/90"
+          class="md:h-40 md:w-40 h-20 w-20 object-cover rounded-full ring-4 ring-white/90"
         />
         <div class="h-full flex-2 flex-col gap-y-2 w-full">
           <h1 class="text-bold text-4xl md:text-5xl font-heading">
@@ -61,7 +61,7 @@ const sorted = projects.sort(
       </div>
       <!-- Socials -->
       <div>
-        <div class="w-full flex flex-row gap-2">
+        <div class="w-full flex flex-wrap md:flex-row gap-2">
           <Button
             href="https://github.com/joethomas490"
             label="GitHub"
@@ -86,7 +86,7 @@ const sorted = projects.sort(
             href="https://assets.joenoseph.co.uk/JoeThomas_FrontendEngineer.pdf"
             label="Download CV"
             download
-            class="flex-1"
+            class="flex-1 min-w-24"
           >
             <Download class="w-5 h-5" />
             Download CV
