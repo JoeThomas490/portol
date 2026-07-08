@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme {
+  --font-heading: "Poppins", system-ui, sans-serif;
+}
+
 :root {
   --transition-duration: 0.3s;
   --transition-easing: cubic-bezier(0.25, 0, 0.2, 1);
