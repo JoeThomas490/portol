@@ -13,16 +13,14 @@ const sorted = projects.sort(
 ---
 
 <DeveloperLayout mode="programming">
-  <section
-    class="flex flex-col gap-y-10 p-8 ring-0 ring-purple-500/50 rounded-2xl mt-12 rounded-b-none bg-linear-to-b from-purple-800/60 via-purple-800/20 to-transparent"
-  >
+  <section class="flex flex-col gap-y-4 p-8 rounded-2xl mt-12">
     <!-- Hero -->
-    <div>
+    <div class="flex flex-col gap-y-4">
       <div class="w-full flex flex-row gap-8">
         <img
           src="https://assets.joenoseph.co.uk/me/me_002_square.webp"
           alt="Joe Thomas"
-          class="h-40 w-40 object-cover rounded-full ring-4 ring-white/70"
+          class="h-40 w-40 object-cover rounded-full ring-4 ring-white/90"
         />
         <div class="h-full flex-2 flex-col gap-y-2 w-full">
           <h1 class="text-bold text-4xl md:text-5xl font-heading">
@@ -35,104 +33,107 @@ const sorted = projects.sort(
               ><a href="/programming/labbo">Labbo</a></span
             >.
           </p>
-          <p class="text-sm mt-4 group">
+          <p class="text-sm my-4 group">
             <a
               href="https://www.google.com/maps/place/Liverpool,+UK"
               target="_blank"
               rel="noopener noreferrer"
-              ><span
-                class="group-hover:animate-bounce transition-all duration-200"
-                >📍</span
-              > Liverpool, UK</a
+            >
+              Currently based in:<span class="font-heading"
+                ><span
+                  class="group-hover:animate-bounce transition-all duration-200"
+                  >📍</span
+                > Liverpool, UK</span
+              ></a
             >
           </p>
         </div>
       </div>
-    </div>
-    <!-- Socials -->
-    <div>
-      <div class="w-full flex flex-row gap-2">
-        <Button
-          href="https://github.com/joethomas490"
-          label="GitHub"
-          icon="https://cdn.simpleicons.org/github/ffffff"
-        />
-        <Button
-          href="https://www.linkedin.com/in/jmthomas96/"
-          label="LinkedIn"
-          icon="/icons/linkedin.png"
-        />
-        <Button
-          href="https://instagram.com/joenoseph"
-          label="Instagram"
-          icon="https://cdn.simpleicons.org/instagram/ffffff"
-        />
-        <Button
-          href="mailto:joe_thomas490@hotmail.com"
-          label="Email"
-          icon="https://cdn.simpleicons.org/gmail/ffffff"
-        />
-        <Button
-          href="https://assets.joenoseph.co.uk/JoeThomas_FrontendEngineer.pdf"
-          label="Download CV"
-          download
-          class="flex-1"
-        >
-          <Download class="w-5 h-5" />
-          Download CV
-        </Button>
+      <!-- Socials -->
+      <div>
+        <div class="w-full flex flex-row gap-2">
+          <Button
+            href="https://github.com/joethomas490"
+            label="GitHub"
+            icon="https://cdn.simpleicons.org/github/ffffff"
+          />
+          <Button
+            href="https://www.linkedin.com/in/jmthomas96/"
+            label="LinkedIn"
+            icon="/icons/linkedin.png"
+          />
+          <Button
+            href="https://instagram.com/joenoseph"
+            label="Instagram"
+            icon="https://cdn.simpleicons.org/instagram/ffffff"
+          />
+          <Button
+            href="mailto:joe_thomas490@hotmail.com"
+            label="Email"
+            icon="https://cdn.simpleicons.org/gmail/ffffff"
+          />
+          <Button
+            href="https://assets.joenoseph.co.uk/JoeThomas_FrontendEngineer.pdf"
+            label="Download CV"
+            download
+            class="flex-1"
+          >
+            <Download class="w-5 h-5" />
+            Download CV
+          </Button>
+        </div>
       </div>
     </div>
-  </section>
-  <div class="pt-4">
-    <LanguageBar
-      languages={{
-        "C++": { percent: 25, colour: "#f34b7d" },
-        Python: { percent: 20, colour: "#dea584" },
-        TypeScript: { percent: 15, colour: "#3178c6" },
-        React: { percent: 10, colour: "#5686a5" },
-        HLSL: { percent: 15, colour: "#4caf50" },
-        UE5: { percent: 10, colour: "#2b2d42" },
-        TailwindCSS: { percent: 5, colour: "#563d7c" },
-      }}
-    />
-  </div>
-
-  <section class="py-12">
-    <h2 class="text-2xl font-bold mb-4 font-heading">Projects</h2>
-    <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-      {
-        sorted.map((project) => (
-          <a
-            href={`/programming/${project.id}`}
-            class="project-tile group relative aspect-square overflow-hidden bg-(--color-muted) rounded-2xl"
-          >
-            {project.data.heroImage && (
-              <img
-                src={project.data.heroImage}
-                alt={project.data.title}
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.25,0,0.2,1)] group-hover:scale-105"
-                loading="lazy"
-              />
-            )}
-            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300" />
-            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <h2 class="text-white text-xl md:text-2xl font-bold tracking-tight text-center px-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] font-heading">
-                {project.data.title}
-              </h2>
-            </div>
-            {project.data.tools && project.data.tools.length > 0 && (
-              <div class="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5 z-10">
-                {project.data.tools.slice(0, 3).map((tool: string) => (
-                  <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-black/50 text-white/90 backdrop-blur-sm border border-white/10">
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            )}
-          </a>
-        ))
-      }
+    <div class="pt-0">
+      <LanguageBar
+        languages={{
+          "C++": { percent: 25, colour: "#f34b7d" },
+          Python: { percent: 20, colour: "#dea584" },
+          TypeScript: { percent: 15, colour: "#3178c6" },
+          React: { percent: 10, colour: "#5686a5" },
+          HLSL: { percent: 15, colour: "#4caf50" },
+          UE5: { percent: 10, colour: "#2b2d42" },
+          TailwindCSS: { percent: 5, colour: "#563d7c" },
+        }}
+      />
     </div>
+
+    <section class="py-12">
+      <h2 class="text-2xl font-bold mb-4 font-heading">Projects</h2>
+      <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+        {
+          sorted.map((project) => (
+            <a
+              href={`/programming/${project.id}`}
+              class="project-tile group relative aspect-square overflow-hidden bg-(--color-muted) rounded-2xl"
+            >
+              {project.data.heroImage && (
+                <img
+                  src={project.data.heroImage}
+                  alt={project.data.title}
+                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.25,0,0.2,1)] group-hover:scale-105"
+                  loading="lazy"
+                />
+              )}
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300" />
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <h2 class="text-white text-xl md:text-2xl font-bold tracking-tight text-center px-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] font-heading">
+                  {project.data.title}
+                </h2>
+              </div>
+              {project.data.tools && project.data.tools.length > 0 && (
+                <div class="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5 z-10">
+                  {project.data.tools.slice(0, 3).map((tool: string) => (
+                    <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-black/50 text-white/90 backdrop-blur-sm border border-white/10">
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </a>
+          ))
+        }
+      </div>
+    </section>
   </section>
 </DeveloperLayout>
