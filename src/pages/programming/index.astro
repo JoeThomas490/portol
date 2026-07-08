@@ -105,7 +105,9 @@ const sorted = projects.sort(
         <h2 class="text-2xl font-bold font-heading">Projects</h2>
         <Star stroke-width={2} class="w-6 h-6 text-purple-500" />
       </div>
-      <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+      <div
+        class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 project-group"
+      >
         {
           sorted.map((project) => (
             <ProjectTile
@@ -121,3 +123,19 @@ const sorted = projects.sort(
     </section>
   </section>
 </DeveloperLayout>
+
+<style is:global>
+  .project-group:has(.project-tile:hover) .project-tile:not(:hover) {
+    opacity: 0.5;
+    filter: brightness(0.6);
+    transition:
+      opacity 0.3s ease,
+      filter 0.3s ease;
+  }
+
+  .project-tile {
+    transition:
+      opacity 0.3s ease,
+      filter 0.3s ease;
+  }
+</style>
