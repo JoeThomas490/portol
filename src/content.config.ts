@@ -21,6 +21,19 @@ const programming = defineCollection({
   }),
 });
 
+const workExperience = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/programming/work-experience' }),
+  schema: z.object({
+    role: z.string(),
+    studio: z.string(),
+    logo: z.string().url().optional(),
+    dateRange: z.string(),
+    website: z.string().url().optional(),
+    order: z.number().default(0),
+    active: z.boolean().default(false),
+  }),
+});
+
 const photography = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/photography' }),
   schema: z.object({
@@ -37,4 +50,4 @@ const photography = defineCollection({
   }),
 });
 
-export const collections = { programming, photography };
+export const collections = { programming, photography, workExperience };

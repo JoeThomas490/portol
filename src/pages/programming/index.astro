@@ -1,14 +1,20 @@
 ---
 import ProgrammingLayout from "../../layouts/ProgrammingLayout.astro";
 import DeveloperLayout from "../../layouts/DeveloperLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import Download from "@lucide/astro/icons/download";
 import Star from "@lucide/astro/icons/star";
+import Briefcase from "@lucide/astro/icons/briefcase";
 import Button from "../../components/programming/Button.astro";
 import LanguageBar from "../../components/programming/LanguageBar.astro";
 import ProjectTile from "../../components/programming/ProjectTile.astro";
+import WorkExperienceCard from "../../components/programming/WorkExperienceCard.astro";
 
 const projects = await getCollection("programming");
+const workExperience = await getCollection("workExperience");
+const sortedExperience = workExperience.sort(
+  (a, b) => a.data.order - b.data.order,
+);
 const sorted = projects.sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
@@ -118,6 +124,32 @@ const sorted = projects.sort(
               tags={project.data.tags}
             />
           ))
+        }
+      </div>
+    </section>
+    <!-- Experience -->
+    <section>
+      <div class="flex flex-row gap-x-2 items-center mb-4">
+        <h2 class="text-2xl font-bold font-heading">Experience</h2>
+        <Briefcase stroke-width={2} class="w-6 h-6 text-purple-500" />
+      </div>
+      <div class="flex flex-col gap-4">
+        {
+          sortedExperience.map(async (exp) => {
+            const { Content } = await render(exp);
+            return (
+              <WorkExperienceCard
+                role={exp.data.role}
+                studio={exp.data.studio}
+                logo={exp.data.logo}
+                dateRange={exp.data.dateRange}
+                website={exp.data.website}
+                active={exp.data.active}
+              >
+                <Content />
+              </WorkExperienceCard>
+            );
+          })
         }
       </div>
     </section>
