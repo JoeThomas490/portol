@@ -11,82 +11,100 @@ const sorted = projects.sort(
 ---
 
 <DeveloperLayout mode="programming">
-  <section class="pt-20">
-    <div class="w-full flex flex-row gap-8">
-      <img
-        src="https://assets.joenoseph.co.uk/me/me_002.jpg"
-        alt="Joe Thomas"
-        class="h-40 w-fullobject-cover rounded-2xl"
-      />
-      <div class="h-full flex flex-col gap-y-2 w-full">
-        <h1 class="text-4xl md:text-5xl font-bold">Hey I'm Joe Thomas!</h1>
-        <p class="text-lg md:text-xl">
-          I'm a software engineer and co-founder of Labbo.
-        </p>
+  <section
+    class="flex flex-col gap-y-4 p-8 ring-0 ring-purple-500/50 rounded-2xl mt-12 rounded-b-none bg-linear-to-b from-purple-800/60 via-purple-800/20 to-transparent"
+  >
+    <!-- Hero -->
+    <div>
+      <div class="w-full flex flex-row gap-8">
+        <img
+          src="https://assets.joenoseph.co.uk/me/me_002.jpg"
+          alt="Joe Thomas"
+          class="h-40 w-40 object-cover rounded-full ring-4 ring-white/70"
+        />
+        <div class="h-full flex-2 flex-col gap-y-2 w-full">
+          <h1 class="text-4xl md:text-5xl font-bold">
+            Hey, I'm <span class="text-purple-500">Joe Thomas!</span> 👋
+          </h1>
+          <p class="text-lg md:text-xl mt-4">
+            I'm a co-founder + Technical Lead of <span
+              class="underline decoration-wavy decoration-purple-500 decoration-2"
+              ><a href="/programming/labbo">Labbo</a></span
+            >, a Creative Software Engineer and UI Technical Artist.
+          </p>
+          <p class="text-sm mt-4 group">
+            <a
+              href="https://www.google.com/maps/place/Liverpool,+UK"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><span
+                class="group-hover:animate-bounce transition-all duration-200"
+                >📍</span
+              > Liverpool, UK</a
+            >
+          </p>
+        </div>
       </div>
     </div>
-  </section>
-  <section class="pt-4">
-    <div class="w-full flex flex-row gap-2">
-      <a
-        href="https://github.com/joethomas490"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
-        aria-label="GitHub"
-      >
-        <img
-          src="https://cdn.simpleicons.org/github/ffffff"
-          alt="GitHub"
-          class="w-5 h-5"
-        />
-      </a>
-      <a
-        href="https://www.linkedin.com/in/jmthomas96/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
-        aria-label="LinkedIn"
-      >
-        <img
-          src="https://cdn.simpleicons.org/linkedin/ffffff"
-          alt="LinkedIn"
-          class="w-5 h-5"
-        />
-      </a>
-      <a
-        href="https://instagram.com/joenoseph"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
-        aria-label="Instagram"
-      >
-        <img
-          src="https://cdn.simpleicons.org/instagram/ffffff"
-          alt="Instagram"
-          class="w-5 h-5"
-        />
-      </a>
-      <a
-        href="mailto:joe_thomas490@hotmail.com"
-        class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
-        aria-label="Email"
-      >
-        <img
-          src="https://cdn.simpleicons.org/gmail/ffffff"
-          alt="Email"
-          class="w-5 h-5"
-        />
-      </a>
-      <a
-        href="https://assets.joenoseph.co.uk/cv/cv.pdf"
-        download
-        class="flex-1 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center gap-2 font-medium text-sm"
-        aria-label="Download CV"
-      >
-        <Download class="w-5 h-5" />
-        Download CV
-      </a>
+    <!-- Socials -->
+    <div>
+      <div class="w-full flex flex-row gap-2">
+        <a
+          href="https://github.com/joethomas490"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
+          aria-label="GitHub"
+        >
+          <img
+            src="https://cdn.simpleicons.org/github/ffffff"
+            alt="GitHub"
+            class="w-5 h-5"
+          />
+        </a>
+        <a
+          href="https://www.linkedin.com/in/jmthomas96/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
+          aria-label="LinkedIn"
+        >
+          <img src="public/icons/linkedin.png" alt="LinkedIn" class="w-5 h-5" />
+        </a>
+        <a
+          href="https://instagram.com/joenoseph"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
+          aria-label="Instagram"
+        >
+          <img
+            src="https://cdn.simpleicons.org/instagram/ffffff"
+            alt="Instagram"
+            class="w-5 h-5"
+          />
+        </a>
+        <a
+          href="mailto:joe_thomas490@hotmail.com"
+          class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
+          aria-label="Email"
+        >
+          <img
+            src="https://cdn.simpleicons.org/gmail/ffffff"
+            alt="Email"
+            class="w-5 h-5"
+          />
+        </a>
+        <a
+          href="https://assets.joenoseph.co.uk/cv/cv.pdf"
+          download
+          class="flex-1 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center gap-2 font-medium text-sm"
+          aria-label="Download CV"
+        >
+          <Download class="w-5 h-5" />
+          Download CV
+        </a>
+      </div>
     </div>
   </section>
   <section class="py-12">
