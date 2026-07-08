@@ -1,0 +1,53 @@
+---
+interface Language {
+  percent: number;
+  colour: string;
+}
+
+interface Props {
+  languages: Record<string, Language>;
+}
+
+const { languages } = Astro.props;
+
+const entries = Object.entries(languages).sort(
+  ([, a], [, b]) => b.percent - a.percent,
+);
+---
+
+<div class="lang-bar relative flex h-2.5 w-full rounded-full">
+  {
+    entries.map(([name, { percent, colour }], i) => (
+      <div
+        class="lang-segment group relative h-full transition-opacity duration-150"
+        style={`width: ${percent}%;`}
+      >
+        <div
+          class:list={[
+            "absolute inset-0",
+            i === 0 && "rounded-l-full",
+            i === entries.length - 1 && "rounded-r-full",
+          ]}
+          style={`background-color: ${colour};`}
+        />
+        <div class="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20">
+          <div class="whitespace-nowrap rounded-md bg-black/90 px-2.5 py-1.5 text-xs text-white shadow-lg backdrop-blur-sm border border-white/10 flex items-center gap-1.5">
+            <span
+              class="inline-block h-2 w-2 rounded-full shrink-0"
+              style={`background-color: ${colour};`}
+            />
+            <span class="font-medium">{name}</span>
+            <span class="text-white/50">{percent}%</span>
+          </div>
+          <div class="mx-auto h-0 w-0 border-x-[5px] border-t-[5px] border-x-transparent border-t-black/90" />
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .lang-bar:has(.lang-segment:hover) .lang-segment:not(:hover) {
+    opacity: 0.5;
+  }
+</style>
