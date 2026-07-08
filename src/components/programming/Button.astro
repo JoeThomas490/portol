@@ -1,0 +1,26 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  icon?: string;
+  class?: string;
+  download?: boolean;
+}
+
+const { href, label, icon, class: className, download } = Astro.props;
+const isExternal = href.startsWith("http") || href.startsWith("mailto:");
+---
+
+<a
+  href={href}
+  {...isExternal && { target: "_blank", rel: "noopener noreferrer" }}
+  {...download && { download: true }}
+  class:list={[
+    "h-12 w-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center gap-2 font-medium text-sm",
+    className,
+  ]}
+  aria-label={label}
+>
+  {icon && <img src={icon} alt={label} class="w-5 h-5" />}
+  <slot />
+</a>

@@ -3,6 +3,7 @@ import ProgrammingLayout from "../../layouts/ProgrammingLayout.astro";
 import DeveloperLayout from "../../layouts/DeveloperLayout.astro";
 import { getCollection } from "astro:content";
 import Download from "@lucide/astro/icons/download";
+import Button from "../../components/programming/Button.astro";
 
 const projects = await getCollection("programming");
 const sorted = projects.sort(
@@ -49,61 +50,35 @@ const sorted = projects.sort(
     <!-- Socials -->
     <div>
       <div class="w-full flex flex-row gap-2">
-        <a
+        <Button
           href="https://github.com/joethomas490"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
-          aria-label="GitHub"
-        >
-          <img
-            src="https://cdn.simpleicons.org/github/ffffff"
-            alt="GitHub"
-            class="w-5 h-5"
-          />
-        </a>
-        <a
+          label="GitHub"
+          icon="https://cdn.simpleicons.org/github/ffffff"
+        />
+        <Button
           href="https://www.linkedin.com/in/jmthomas96/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
-          aria-label="LinkedIn"
-        >
-          <img src="public/icons/linkedin.png" alt="LinkedIn" class="w-5 h-5" />
-        </a>
-        <a
+          label="LinkedIn"
+          icon="/icons/linkedin.png"
+        />
+        <Button
           href="https://instagram.com/joenoseph"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
-          aria-label="Instagram"
-        >
-          <img
-            src="https://cdn.simpleicons.org/instagram/ffffff"
-            alt="Instagram"
-            class="w-5 h-5"
-          />
-        </a>
-        <a
+          label="Instagram"
+          icon="https://cdn.simpleicons.org/instagram/ffffff"
+        />
+        <Button
           href="mailto:joe_thomas490@hotmail.com"
-          class="w-12 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center"
-          aria-label="Email"
-        >
-          <img
-            src="https://cdn.simpleicons.org/gmail/ffffff"
-            alt="Email"
-            class="w-5 h-5"
-          />
-        </a>
-        <a
-          href="https://assets.joenoseph.co.uk/cv/cv.pdf"
+          label="Email"
+          icon="https://cdn.simpleicons.org/gmail/ffffff"
+        />
+        <Button
+          href="https://assets.joenoseph.co.uk/JoeThomas_FrontendEngineer.pdf"
+          label="Download CV"
           download
-          class="flex-1 h-12 rounded-lg bg-(--color-muted) hover:bg-(--color-border) transition-colors duration-200 flex items-center justify-center gap-2 font-medium text-sm"
-          aria-label="Download CV"
+          class="flex-1"
         >
           <Download class="w-5 h-5" />
           Download CV
-        </a>
+        </Button>
       </div>
     </div>
   </section>
