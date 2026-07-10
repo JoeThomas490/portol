@@ -34,18 +34,13 @@ const programmingExperience = defineCollection({
 });
 
 const photography = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/photography' }),
+  loader: glob({ pattern: '*.md', base: './src/content/photography' }),
   schema: z.object({
-    title: z.string(),
+    title: z.string().default(''),
     collection: z.string(),
-    alt: z.string(),
-    caption: z.string().optional(),
-    src: z.string().url(),
-    camera: z.string().optional(),
-    lens: z.string().optional(),
+    prefix: z.string(),
+    alt: z.string().optional(),
     date: z.coerce.date().optional(),
-    featured: z.boolean().default(false),
-    order: z.number().default(0),
   }),
 });
 

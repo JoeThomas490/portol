@@ -1,30 +1,10 @@
 ---
 import PhotographyLayout from "../../layouts/PhotographyLayout.astro";
-import { getCollection } from "astro:content";
+import { getPhotoCollections } from "../../lib/photography";
 import ChevronLeft from "@lucide/astro/icons/chevron-left";
 
-const photos = await getCollection("photography");
-
-const collectionMap = new Map<string, typeof photos>();
-for (const photo of photos) {
-  const name = photo.data.collection;
-  if (!collectionMap.has(name)) collectionMap.set(name, []);
-  collectionMap.get(name)!.push(photo);
-}
-
-for (const [, items] of collectionMap) {
-  items.sort((a, b) => a.data.order - b.data.order);
-}
-
-const collectionNames = [...collectionMap.keys()].sort();
-const collectionsData = collectionNames.map((name) => ({
-  name,
-  photos: collectionMap.get(name)!.map((p) => ({
-    src: p.data.src,
-    alt: p.data.alt,
-    title: p.data.title,
-  })),
-}));
+const collectionsData = await getPhotoCollections();
+const collectionNames = collectionsData.map((col) => col.name);
 ---
 
 <PhotographyLayout>
@@ -44,7 +24,7 @@ const collectionsData = collectionNames.map((name) => ({
         id="active-collection-name"
         class="text-[0.65rem] font-bold tracking-widest uppercase m-0"
       >
-        {collectionNames[0]}
+        {collectionNames[0] ?? "Collections"}
       </h2>
       <span
         id="sidebar-chevron"
@@ -94,47 +74,66 @@ const collectionsData = collectionNames.map((name) => ({
     class="flex-1 h-full relative flex items-center justify-center overflow-hidden"
   >
     {
-      collectionsData.map((col, ci) =>
-        col.photos.map((photo, pi) => (
-          <figure
-            class:list={[
-              "photo-slide absolute inset-0 flex items-center justify-center transition-opacity duration-500",
-              ci === 0 && pi === 0
-                ? "opacity-100"
-                : "opacity-0 pointer-events-none",
-            ]}
-            data-collection={ci}
-            data-photo={pi}
-          >
-            <img
-              src={photo.src}
-              alt={photo.alt}
-              class="max-w-full max-h-full object-contain"
-            />
-          </figure>
-        )),
+      collectionsData.length === 0 ? (
+        <p class="text-sm" style="color: var(--color-accent);">
+          No collections found. Add a collection markdown file and upload images
+          to the matching R2 prefix.
+        </p>
+      ) : (
+        collectionsData.map((col, ci) =>
+          col.photos.map((photo, pi) => (
+            <figure
+              class:list={[
+                "photo-slide absolute inset-0 flex items-center justify-center transition-opacity duration-500",
+                ci === 0 && pi === 0
+                  ? "opacity-100"
+                  : "opacity-0 pointer-events-none",
+              ]}
+              data-collection={ci}
+              data-photo={pi}
+            >
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                class="max-w-full max-h-full object-contain"
+              />
+            </figure>
+          )),
+        )
       )
     }
 
-    <button
-      id="nav-prev"
-      class="absolute left-0 top-0 w-1/3 h-full z-10 cursor-w-resize opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-start pl-6"
-      aria-label="Previous photo"
-    >
-      <span class="text-3xl select-none" style="color: var(--color-accent);">
-        &#8249;
-      </span>
-    </button>
+    {
+      collectionsData.length > 0 && (
+        <>
+          <button
+            id="nav-prev"
+            class="absolute left-0 top-0 w-1/3 h-full z-10 cursor-w-resize opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-start pl-6"
+            aria-label="Previous photo"
+          >
+            <span
+              class="text-3xl select-none"
+              style="color: var(--color-accent);"
+            >
+              &#8249;
+            </span>
+          </button>
 
-    <button
-      id="nav-next"
-      class="absolute right-0 top-0 w-1/3 h-full z-10 cursor-e-resize opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-end pr-6"
-      aria-label="Next photo"
-    >
-      <span class="text-3xl select-none" style="color: var(--color-accent);">
-        &#8250;
-      </span>
-    </button>
+          <button
+            id="nav-next"
+            class="absolute right-0 top-0 w-1/3 h-full z-10 cursor-e-resize opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-end pr-6"
+            aria-label="Next photo"
+          >
+            <span
+              class="text-3xl select-none"
+              style="color: var(--color-accent);"
+            >
+              &#8250;
+            </span>
+          </button>
+        </>
+      )
+    }
   </div>
 </PhotographyLayout>
 
