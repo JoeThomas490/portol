@@ -4,7 +4,7 @@ import ExternalLink from "@lucide/astro/icons/external-link";
 import Tag from "@lucide/astro/icons/tag";
 import DeveloperLayout from "../../layouts/DeveloperLayout.astro";
 import Button from "../../components/programming/Button.astro";
-import { Image } from "astro:assets";
+import Image from "astro/components/Image.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("programming");
