@@ -1,6 +1,7 @@
 ---
 title: "DJade"
 description: "Music file organization tool"
+tags: ["Python", "Tkinter"]
 heroImage: "https://assets.joenoseph.co.uk/programming/djade/screen_01.JPG"
 repo: "https://www.github.com/joethomas490/djade"
 studio: "Personal"
@@ -8,7 +9,6 @@ role: "Engineer, Design"
 date: 2019-01-01
 dateRange: "2019"
 platform: "PC"
-tools: ["Python", "Tkinter"]
 ---
 
 ## Description

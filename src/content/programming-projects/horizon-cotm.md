@@ -1,14 +1,13 @@
 ---
 title: "Horizon : Call of the Mountain"
 description: "PSVR2 Release Title"
-tags: ["unreal", "ue5", "c++", "blueprints", "figma"]
+tags: ["game", "ue5", "c++", "blueprints", "figma", "PSVR2"]
 heroImage: "https://assets.joenoseph.co.uk/programming/hcotm/hcotm.png"
 role: "Senior UI Engineer"
 studio: "Firesprite"
 date: 2024-05-01
 dateRange: "2024"
 platform: "PSVR2"
-tools: ["UE5", "C++", "Blueprints", "Figma"]
 ---
 
 ## Description

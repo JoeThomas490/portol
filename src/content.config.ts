@@ -16,7 +16,6 @@ const programming = defineCollection({
     date: z.coerce.date(),
     dateRange: z.string().optional(),
     platform: z.string().optional(),
-    tools: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
   }),
 });

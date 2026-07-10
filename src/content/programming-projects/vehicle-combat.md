@@ -1,14 +1,13 @@
 ---
 title: "Unannounced Multiplayer Vehicle Combat Game"
 description: "UI engineering for a multiplayer vehicle combat game built in Unreal Engine 5."
-tags: ["unreal", "ue5", "c++", "blueprints", "figma"]
+tags: ["game", "ue5", "c++", "blueprints", "figma"]
 heroImage: "https://assets.joenoseph.co.uk/programming/uvmg/uvmg.png"
 role: "Senior UI Engineer"
 studio: "Firesprite"
 date: 2024-01-01
 dateRange: "2022–2024"
 platform: "PC - PS5"
-tools: ["UE5", "C++", "Blueprints", "Figma"]
 ---
 
 ## Description

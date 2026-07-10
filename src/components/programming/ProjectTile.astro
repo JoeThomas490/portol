@@ -45,7 +45,7 @@ const { href, title, description, heroImage, tags = [] } = Astro.props;
           </span>
           {tags.map((tag: string) => (
             <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
-              {tag}
+              {tag.toLowerCase()}
             </span>
           ))}
         </div>

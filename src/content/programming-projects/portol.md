@@ -7,7 +7,6 @@ heroImage: "https://assets.joenoseph.co.uk/programming/portol/portol.png"
 date: 2026-06-26
 dateRange: "2026"
 platform: "Web"
-tools: ["Astro", "React", "Tailwind", "Cloudflare Pages"]
 ---
 
 <!-- ## Description

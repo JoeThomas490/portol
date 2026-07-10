@@ -1,13 +1,12 @@
 ---
 title: "Labbo"
 description: "A full-stack SaaS platform built for the film photography industry to streamline image transfer and cloud storage"
-tags: ["react", "cloudflare", "tailwind", "django"]
+tags: ["React", "Django", "Tailwind", "Tanstack Query", "Fly.IO"]
 heroImage: "https://assets.joenoseph.co.uk/programming/header.jpg"
 role: "Co-Founder & Lead Engineer"
 date: 2030-01-01
 dateRange: "2025 - Present"
 platform: "Web"
-tools: ["React", "Django", "Tailwind", "Tanstack Query", "Fly.IO", "Cloudflare"]
 url: "https://www.labbo.co.uk"
 ---
 
