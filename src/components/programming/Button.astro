@@ -1,6 +1,4 @@
 ---
-import Image from "astro/components/Image.astro";
-
 interface Props {
   href: string;
   label: string;
@@ -25,7 +23,7 @@ const isExternal = href.startsWith("http") || href.startsWith("mailto:");
 >
   {
     icon && (
-      <Image
+      <img
         src={icon}
         alt={label}
         class="w-4 md:w-6 h-4 md:h-6"

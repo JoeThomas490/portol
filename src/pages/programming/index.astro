@@ -9,7 +9,7 @@ import Button from "../../components/programming/Button.astro";
 import LanguageBar from "../../components/programming/LanguageBar.astro";
 import ProjectTile from "../../components/programming/ProjectTile.astro";
 import WorkExperienceCard from "../../components/programming/WorkExperienceCard.astro";
-import Image from "astro/components/Image.astro";
+import { Image } from "astro:assets";
 
 const projects = await getCollection("programming");
 const workExperience = await getCollection("programmingExperience");
