@@ -4,6 +4,7 @@ import ExternalLink from "@lucide/astro/icons/external-link";
 import Tag from "@lucide/astro/icons/tag";
 import DeveloperLayout from "../../layouts/DeveloperLayout.astro";
 import Button from "../../components/programming/Button.astro";
+import Image from "astro/components/Image.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("programming");
@@ -29,10 +30,13 @@ const meta = [
     {
       project.data.heroImage && (
         <div class="h-96 md:h-fit w-full p-4 aspect-21/9 overflow-hidden mb-10">
-          <img
+          <Image
             src={project.data.heroImage}
             alt={project.data.title}
             class="w-full h-full object-cover rounded-lg"
+            width={1000}
+            height={1000}
+            loading="lazy"
           />
         </div>
       )
