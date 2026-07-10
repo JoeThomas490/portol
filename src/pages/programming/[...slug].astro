@@ -38,7 +38,7 @@ const meta = [
       )
     }
 
-    <div class="p-8 pt-2">
+    <div class="p-12 pt-2">
       <div class="flex items-start justify-between gap-4 mb-6">
         <h1 class="text-3xl md:text-5xl font-bold tracking-tight font-heading">
           {project.data.title}
@@ -98,7 +98,7 @@ const meta = [
       }
     </div>
 
-    <div class="project-prose p-8 pt-2">
+    <div class="project-prose p-12 pt-2">
       <Content />
     </div>
 
@@ -135,7 +135,7 @@ const meta = [
     color: var(--color-accent);
     line-height: 1.75;
     margin-bottom: 1.25rem;
-    max-width: 72ch;
+    max-width: 100%;
   }
 
   .project-prose :global(ul),
@@ -159,8 +159,13 @@ const meta = [
     list-style-type: decimal;
   }
 
+  .project-prose :global(p:has(img)) {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .project-prose :global(img) {
-    width: 100%;
     border-radius: 0.5rem;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
