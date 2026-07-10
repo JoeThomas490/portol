@@ -1,6 +1,4 @@
 ---
-import Image from "astro/components/Image.astro";
-
 interface Props {
   href: string;
   label: string;
@@ -23,18 +21,7 @@ const isExternal = href.startsWith("http") || href.startsWith("mailto:");
   ]}
   aria-label={label}
 >
-  {
-    icon && (
-      <Image
-        src={icon}
-        alt={label}
-        class="w-4 md:w-6 h-4 md:h-6"
-        width={24}
-        height={24}
-        loading="lazy"
-      />
-    )
-  }
+  {icon && <img src={icon} alt={label} class="w-4 md:w-6 h-4 md:h-6" />}
   <slot />
 </a>
 

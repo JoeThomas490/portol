@@ -9,7 +9,6 @@ import Button from "../../components/programming/Button.astro";
 import LanguageBar from "../../components/programming/LanguageBar.astro";
 import ProjectTile from "../../components/programming/ProjectTile.astro";
 import WorkExperienceCard from "../../components/programming/WorkExperienceCard.astro";
-import Image from "astro/components/Image.astro";
 
 const projects = await getCollection("programming");
 const workExperience = await getCollection("programmingExperience");
@@ -28,12 +27,10 @@ const sorted = projects.sort(
     <!-- Hero -->
     <div class="flex flex-col gap-y-4">
       <div class="w-full flex flex-row gap-8">
-        <Image
+        <img
           src="https://assets.joenoseph.co.uk/me/me_002_square.webp"
           alt="Joe Thomas"
           class="md:h-40 md:w-40 h-20 w-20 object-cover rounded-full ring-4 ring-white/90"
-          width={160}
-          height={160}
         />
         <div class="h-full flex-2 flex-col gap-y-2 w-full">
           <h1 class="text-bold text-4xl md:text-5xl font-heading">
