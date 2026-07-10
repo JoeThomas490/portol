@@ -1,5 +1,6 @@
 ---
 import { ViewTransitions } from "astro:transitions";
+import Favicons from "../components/Favicons.astro";
 import ModeBubble from "../components/ModeBubble.astro";
 
 interface Props {
@@ -16,7 +17,7 @@ const { title, mode } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Joe Thomas" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Favicons variant={mode === "photography" ? "photo" : "dev"} />
     <title>Joe Thomas | {title}</title>
     <ViewTransitions />
   </head>

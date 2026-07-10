@@ -1,5 +1,6 @@
 ---
 import { ViewTransitions } from "astro:transitions";
+import Favicons from "../components/Favicons.astro";
 import Camera from "@lucide/astro/icons/camera";
 import CodeXml from "@lucide/astro/icons/code-xml";
 import Palette from "@lucide/astro/icons/palette";
@@ -45,7 +46,7 @@ const modes = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Joe Thomas" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Favicons variant="dev" />
     <title>Portfolio | Joe Thomas</title>
     <ViewTransitions />
   </head>
