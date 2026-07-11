@@ -13,7 +13,7 @@ platform: "Web"
 
 Portol is a personal portfolio site built to showcase different sectors of my creative work through distinct visual modes.
 
-This site moves away from the traditional single-page portfolio format. Instead of forcing programming, photography, and future creative disciplines into one visual language, that are usually at odds with each other, the different modes gets their own identity. This also gives me room to grow if I wanted to show off more aspects of my creative endeavours with their own customizable views.
+This site moves away from the traditional single-page portfolio format. Instead of forcing programming, photography, and future creative disciplines into one visual language, that are usually at odds with each other, the different modes get their own identity. This also gives me room to grow if I wanted to show off more aspects of my creative endeavours with their own customizable views.
 
 The site is also built to be content-driven, manageable, and easily extendable. Projects, experience entries, and photography projects are all managed through markdown files within their respective content folders, driving the layout of each page. Adding a new section to a project write-up is as simple as adding a new heading to the markdown file, without needing to touch any templates.
 

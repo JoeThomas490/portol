@@ -1,7 +1,7 @@
 ---
 title: "Labbo"
 description: "A full-stack SaaS platform built for the film photography industry to streamline image transfer and cloud storage"
-tags: ["React", "Django", "Tailwind", "Tanstack Query", "Fly.IO"]
+tags: ["React", "Django", "Tailwind", "TanStack Query", "Fly.io"]
 heroImage: "https://assets.joenoseph.co.uk/programming/labbo/header.webp"
 role: "Co-Founder & Lead Engineer"
 date: 2030-01-01
@@ -23,15 +23,15 @@ Labbo also strives to help film labs, with streamlining their ability to transfe
 
 ## Tech Stack
 
-As primarily a games UI engineer, this was my first large full-stack web project. Having some knowledge with Javascript and Python from previous projects, and wanting to learn popular frameworks that are currently used by companies, I landed on React + Typescript as my frontend and Django.
+As primarily a games UI engineer, this was my first large full-stack web project. Having some knowledge with JavaScript and Python from previous projects, and wanting to learn popular frameworks that are currently used by companies, I landed on React + TypeScript as my frontend and Django.
 
 On top of this I am using:
 
 - **TailwindCSS** - This is another popular framework which I am loving to use as the shorthand notation is easy to remember and change quickly when prototyping layouts
 - **PostgreSQL** - A widely popular and hugely supported database system.
-- **Tanstack Query** - A library for performance focussed API querying with built in caching
+- **TanStack Query** - A library for performance focussed API querying with built-in caching
 - **Zod** - A data validation tool to help with form inputs and keeping consistent schemas for data across pages
-- **Posthog** - A great tool for analytics tracking to help inform future decisions based on real user testing
+- **PostHog** - A great tool for analytics tracking to help inform future decisions based on real user testing
 
 During this project I have also incorporated using AI empowered workflows to speed up development, as I am the sole engineer on the project, with using Cursor and frontier models where applicable. This has been incredibly useful for me to learn new technologies in-situ without having to get stuck searching threads for potential solutions on annoying problems. I am very conscious with my AI usage and try to use it as a learning tool first and foremost, instead of a 'hands off' approach to development.
 
