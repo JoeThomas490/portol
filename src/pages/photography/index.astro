@@ -11,7 +11,7 @@ const collectionNames = collectionsData.map((col) => col.name);
   <!-- Sidebar -->
   <aside
     id="collections-sidebar"
-    class="h-full collapsed overflow-hidden z-5 flex flex-col w-[220px] min-w-[220px] transition-all duration-300 ease-in-out mt-12 pb-80"
+    class="collections-sidebar z-20 md:z-5 flex flex-col overflow-hidden transition-all duration-300 ease-in-out collapsed"
     style="background-color: var(--color-bg);"
   >
     <!-- Title bar — always visible, acts as toggle -->
@@ -60,7 +60,7 @@ const collectionNames = collectionsData.map((col) => col.name);
 
       <a
         href="/photography/about"
-        class="sidebar-about-link block px-5 py-4 text-[0.65rem] font-bold tracking-widest no-underline uppercase transition-colors duration-150"
+        class="sidebar-about-link mt-auto block px-5 py-4 text-[0.65rem] font-bold tracking-widest no-underline uppercase transition-colors duration-150"
         style="color: var(--color-accent);"
       >
         About
@@ -68,10 +68,17 @@ const collectionNames = collectionsData.map((col) => col.name);
     </div>
   </aside>
 
+  <div
+    id="sidebar-backdrop"
+    class="sidebar-backdrop absolute -inset-10 -mt-10 z-10 bg-black/20 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
+    aria-hidden="true"
+  >
+  </div>
+
   <!-- Photo viewer -->
   <div
     id="photo-viewer"
-    class="flex-1 h-full relative flex items-center justify-center overflow-hidden"
+    class="w-full min-w-0 flex-1 h-full relative flex items-center justify-center overflow-hidden"
   >
     {
       collectionsData.length === 0 ? (
@@ -84,7 +91,7 @@ const collectionNames = collectionsData.map((col) => col.name);
           col.photos.map((photo, pi) => (
             <figure
               class:list={[
-                "photo-slide absolute inset-0 flex items-center justify-center transition-opacity duration-500",
+                "photo-slide absolute inset-0 flex items-center justify-center p-3 sm:p-4 md:p-0 transition-opacity duration-500",
                 ci === 0 && pi === 0
                   ? "opacity-100"
                   : "opacity-0 pointer-events-none",
@@ -95,7 +102,7 @@ const collectionNames = collectionsData.map((col) => col.name);
               <img
                 src={photo.src}
                 alt={photo.alt}
-                class="max-w-full max-h-full object-contain"
+                class="max-w-full max-h-[calc(100vh-11rem)] md:max-h-full object-contain"
               />
             </figure>
           )),
@@ -150,6 +157,14 @@ const collectionNames = collectionsData.map((col) => col.name);
     color: var(--color-text);
   }
 
+  #collections-sidebar {
+    position: absolute;
+    top: 3rem;
+    left: 0;
+    bottom: 0;
+    width: min(240px, 85vw);
+  }
+
   #collections-sidebar.collapsed {
     width: auto;
     min-width: auto;
@@ -163,6 +178,46 @@ const collectionNames = collectionsData.map((col) => col.name);
   #collections-sidebar.collapsed #sidebar-chevron {
     transform: rotate(180deg);
   }
+
+  @media (max-width: 767px) {
+    #collections-sidebar.collapsed {
+      bottom: auto;
+      height: auto;
+      border-bottom-right-radius: 0.75rem;
+      box-shadow: 0 4px 24px rgb(0 0 0 / 12%);
+    }
+
+    #collections-sidebar:not(.collapsed) {
+      box-shadow: 4px 0 24px rgb(0 0 0 / 12%);
+    }
+
+    #collections-sidebar:not(.collapsed) + .sidebar-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  @media (min-width: 768px) {
+    #collections-sidebar {
+      position: relative;
+      top: auto;
+      left: auto;
+      bottom: auto;
+      margin-top: 3rem;
+      height: calc(100% - 3rem);
+      width: 220px;
+      min-width: 220px;
+      flex-shrink: 0;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    #collections-sidebar.collapsed {
+      width: auto;
+      min-width: auto;
+      height: calc(100% - 3rem);
+    }
+  }
 </style>
 
 <script define:vars={{ collectionsData }}>
@@ -172,6 +227,7 @@ const collectionNames = collectionsData.map((col) => col.name);
 
     const sidebar = document.getElementById("collections-sidebar");
     const toggle = document.getElementById("sidebar-toggle");
+    const backdrop = document.getElementById("sidebar-backdrop");
     const slides = document.querySelectorAll(".photo-slide");
     const headers = document.querySelectorAll(".collection-header");
     const activeLabel = document.getElementById("active-collection-name");
@@ -179,6 +235,12 @@ const collectionNames = collectionsData.map((col) => col.name);
     if (toggle && sidebar) {
       toggle.addEventListener("click", () => {
         sidebar.classList.toggle("collapsed");
+      });
+    }
+
+    if (backdrop && sidebar) {
+      backdrop.addEventListener("click", () => {
+        sidebar.classList.add("collapsed");
       });
     }
 
