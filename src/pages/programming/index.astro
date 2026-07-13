@@ -22,28 +22,34 @@ const sorted = projects.sort(
 
 <DeveloperLayout mode="programming">
   <section
-    class="flex flex-col gap-y-4 p-8 rounded-2xl my-12 bg-black/20 backdrop-blur-sm"
+    class="flex flex-col gap-y-4 p-4 sm:p-6 md:p-8 rounded-2xl my-8 md:my-12 bg-black/20 backdrop-blur-sm"
   >
     <!-- Hero -->
     <div class="flex flex-col gap-y-4">
-      <div class="w-full flex flex-row gap-8">
+      <div
+        class="w-full flex flex-col md:flex-row gap-4 md:gap-8 items-center md:items-start"
+      >
         <img
           src="https://assets.joenoseph.co.uk/me/me_002_square.webp"
           alt="Joe Thomas"
-          class="md:h-40 md:w-40 h-20 w-20 object-cover rounded-full ring-4 ring-white/90"
+          class="shrink-0 h-24 w-24 md:h-40 md:w-40 object-cover rounded-full ring-4 ring-white/90"
         />
-        <div class="h-full flex-2 flex-col gap-y-2 w-full">
-          <h1 class="text-bold text-4xl md:text-5xl font-heading">
+        <div
+          class="flex flex-1 flex-col gap-y-2 min-w-0 w-full text-center md:text-left"
+        >
+          <h1
+            class="text-bold text-2xl sm:text-3xl md:text-5xl font-heading leading-tight"
+          >
             Hey, I'm <span class="text-purple-500">Joe Thomas!</span> 👋
           </h1>
-          <p class="text-lg md:text-xl mt-4">
+          <p class="text-base sm:text-lg md:text-xl mt-2 md:mt-4">
             I'm a Creative Software Engineer, UI Technical Artist and Co-Founder
             + Technical Lead of <span
               class="underline decoration-wavy decoration-purple-500 decoration-2 font-heading"
               ><a href="/programming/labbo">Labbo</a></span
             >.
           </p>
-          <p class="text-lg md:text-xl mt-4">
+          <p class="text-base sm:text-lg md:text-xl mt-2 md:mt-4">
             I also love <span
               class="underline decoration-wavy decoration-purple-500 decoration-2 font-heading"
               ><a href="/photography">Photography</a></span
@@ -67,7 +73,9 @@ const sorted = projects.sort(
       </div>
       <!-- Socials -->
       <div>
-        <div class="w-full flex flex-wrap md:flex-row gap-2">
+        <div
+          class="w-full flex flex-wrap justify-center md:justify-start gap-2"
+        >
           <Button
             href="https://github.com/joethomas490"
             label="GitHub"
@@ -95,7 +103,7 @@ const sorted = projects.sort(
             class="flex-1 min-w-24"
           >
             <Download class="w-5 h-5" />
-            Download CV
+            CV
           </Button>
         </div>
       </div>
