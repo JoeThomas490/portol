@@ -54,55 +54,74 @@ const modes = [
     <nav class="fixed top-0 left-0 right-0 z-50 p-6">
       <div class="flex items-center justify-between">
         <div class="flex flex-col items-start gap-0">
-          <span class="text-lg font-bold tracking-tight text-white">
-            Joe Thomas
-          </span>
+          <div class="flex items-center gap-2">
+            <span class="text-lg font-bold tracking-tight text-white">
+              joenoseph
+            </span>
+            <span class="text-lg text-green-500">*</span>
+          </div>
         </div>
       </div>
     </nav>
 
-    <div class="flex flex-1 min-h-0">
-      {
-        modes.map((mode) => {
-          const Tag = mode.href ? "a" : "div";
-          const Icon = mode.icon;
-          return (
-            <Tag
-              href={mode.href}
-              class:list={[
-                "bookshelf-slice group relative flex flex-col items-center justify-center gap-4 overflow-hidden",
-                "transition-all duration-500 ease-[cubic-bezier(0.25,0,0.2,1)]",
-                "border-r border-neutral-800 last:border-r-0",
-                mode.href ? "cursor-pointer" : "cursor-default",
-                mode.bg,
-                mode.hoverBg,
-              ]}
-            >
-              <div
-                class="absolute inset-0 bg-cover bg-center grayscale group-hover:grayscale-0 transition-[filter] duration-700 ease-[cubic-bezier(0.25,0,0.2,1)]"
-                style={`background-image: url('${mode.image}');`}
-              />
-              <div class="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-500" />
-
-              <span class="relative z-10 ml-3.5 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] opacity-80 group-hover:opacity-100 transition-opacity duration-500">
-                <Icon size={32} />
-              </span>
-
-              <span
+    <div class="flex flex-col flex-1 min-h-0">
+      <div class="flex flex-1 min-h-0">
+        {
+          modes.map((mode) => {
+            const Tag = mode.href ? "a" : "div";
+            const Icon = mode.icon;
+            return (
+              <Tag
+                href={mode.href}
                 class:list={[
-                  "writing-vertical relative z-10 text-4xl md:text-6xl font-black tracking-wide select-none",
-                  "text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]",
-                  "transition-opacity duration-500",
+                  "bookshelf-slice group relative flex flex-col items-center justify-center gap-4 overflow-hidden",
+                  "transition-all duration-500 ease-[cubic-bezier(0.25,0,0.2,1)]",
+                  "border-r border-neutral-800 last:border-r-0",
+                  mode.href ? "cursor-pointer" : "cursor-default",
+                  mode.bg,
+                  mode.hoverBg,
                 ]}
               >
-                {mode.name}
-              </span>
+                <div
+                  class="absolute inset-0 bg-cover bg-center grayscale group-hover:grayscale-0 transition-[filter] duration-700 ease-[cubic-bezier(0.25,0,0.2,1)]"
+                  style={`background-image: url('${mode.image}');`}
+                />
+                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-500" />
 
-              <span class="absolute z-10 bottom-8 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            </Tag>
-          );
-        })
-      }
+                <span class="relative z-10 ml-3.5 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] opacity-80 group-hover:opacity-100 transition-opacity duration-500">
+                  <Icon size={32} />
+                </span>
+
+                <span
+                  class:list={[
+                    "writing-vertical relative z-10 text-4xl md:text-6xl font-black tracking-wide select-none",
+                    "text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]",
+                    "transition-opacity duration-500",
+                  ]}
+                >
+                  {mode.name}
+                </span>
+
+                <span class="absolute z-10 bottom-8 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </Tag>
+            );
+          })
+        }
+      </div>
+
+      <a
+        href="/about"
+        class="about-bar h-[15%] hover:h-[20%] group relative z-20 flex items-center justify-center py-4 bg-neutral-900 border-t border-neutral-800 no-underline transition-all duration-300 hover:bg-neutral-800"
+      >
+        <span
+          class="text-xl md:text-2xl font-bold tracking-wide text-neutral-400 group-hover:text-white transition-colors duration-300"
+        >
+          About
+        </span>
+        <span
+          class="absolute z-10 right-1/2 bottom-8 translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        ></span>
+      </a>
     </div>
   </body>
 </html>

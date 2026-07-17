@@ -1,0 +1,51 @@
+---
+import { ViewTransitions } from "astro:transitions";
+import Favicons from "../components/Favicons.astro";
+import ArrowLeft from "@lucide/astro/icons/arrow-left";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="About — joenoseph" />
+    <Favicons variant="base" />
+    <title>About | joenoseph</title>
+    <ViewTransitions />
+  </head>
+  <body class="min-h-dvh bg-neutral-950 text-neutral-300">
+    <nav class="fixed top-0 left-0 right-0 z-50 p-6">
+      <div class="flex items-center justify-between">
+        <a
+          href="/"
+          class="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors duration-300 no-underline"
+        >
+          <ArrowLeft size={18} />
+          <span class="text-lg font-bold tracking-tight text-white">
+            joenoseph
+          </span>
+          <span class="text-lg text-green-500">*</span>
+        </a>
+      </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-6 pt-28 pb-16">
+      <h1 class="text-4xl md:text-5xl font-black text-white mb-8">About</h1>
+      <div class="space-y-6 text-lg leading-relaxed">
+        <p>
+          I'm Joe Thomas aka joenoseph — a photographer, programmer, and
+          creative.
+        </p>
+        <p>
+          Explore my work through the sections on the landing page, or get in
+          touch.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  @import "../styles/global.css";
+</style>
