@@ -1,14 +1,19 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import Favicons from "../components/Favicons.astro";
-import ModeBubble from "../components/ModeBubble.astro";
 import ArrowLeft from "@lucide/astro/icons/arrow-left";
 
 interface Props {
   title: string;
   description?: string;
-  mode?: "photography" | "programming" | "base";
+  mode?: "photography" | "programming" | "base" | "about";
 }
+
+const navLinks = [
+  { name: "Photography", href: "/photography" },
+  { name: "Programming", href: "/programming" },
+  { name: "About", href: "/about" },
+];
 
 const { title, description = "joenoseph", mode = "base" } = Astro.props;
 
@@ -37,8 +42,8 @@ const faviconVariant =
       : undefined}
   >
     <nav transition:animate="none" class="fixed top-0 left-0 right-0 z-50 p-6">
-      <div class="flex items-center justify-between">
-        <div class="flex flex-col items-start gap-0">
+      <div class="flex items-start justify-between">
+        <div class="flex flex-col items-start gap-0 text-(--color-text)">
           {
             !isLanding ? (
               <a
@@ -62,22 +67,23 @@ const faviconVariant =
                 >
                   joenoseph
                 </span>
-                <span class="text-lg text-green-500 -ml-1">*</span>
+                <span class="text-lg font-bold text-(--color-accent) -ml-1">
+                  {mode}
+                </span>
+                <span class="text-lg font-bold text-(--color-accent) -ml-1">
+                  *
+                </span>
               </a>
             ) : (
               <div class="flex items-center gap-0 ml-2">
-                <a
-                  href="/"
-                  class="text-lg font-bold tracking-tight"
-                  style="color: var(--color-text);"
-                >
+                <a href="/" class="text-lg font-bold tracking-tight text-white">
                   joenoseph
                 </a>
-                <span class="text-lg text-green-500 -ml-0">*</span>
+                <span class="text-lg text-white ml-1">*</span>
               </div>
             )
           }
-          {
+          <!-- {
             mode !== "base" && (
               <span
                 class="text-lg font-bold tracking-tight text-orange-400 -mt-2 ml-4"
@@ -86,8 +92,38 @@ const faviconVariant =
                 {mode}
               </span>
             )
-          }
+          } -->
         </div>
+        <!-- {
+          !isLanding && (
+            <div class="flex items-start justify-end gap-4">
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive = Astro.url.pathname.startsWith(link.href);
+                return (
+                  <a
+                    href={link.href}
+                    class:list={[
+                      "flex items-center gap-1.5 text-sm font-medium no-underline transition-colors duration-300 bg-green-500/20 rounded-md px-2 py-1",
+                      isActive
+                        ? "text-green-500"
+                        : mode === "base"
+                          ? "text-neutral-500 hover:text-white"
+                          : "",
+                    ]}
+                    style={
+                      !isActive && mode !== "base"
+                        ? "color: var(--color-text); opacity: 0.6;"
+                        : undefined
+                    }
+                  >
+                    <span>{link.name}</span>
+                  </a>
+                );
+              })}
+            </div>
+          )
+        } -->
       </div>
     </nav>
 
@@ -101,4 +137,5 @@ const faviconVariant =
   @import "../styles/global.css";
   @import "../styles/modes/photography.css";
   @import "../styles/modes/programming.css";
+  @import "../styles/modes/about.css";
 </style>

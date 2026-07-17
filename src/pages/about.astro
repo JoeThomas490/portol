@@ -6,13 +6,13 @@ const contacts = [
   {
     label: "Write me an email",
     href: "mailto:contact@joenoseph.co.uk",
-    icon: "https://cdn.simpleicons.org/gmail/22c55e",
+    icon: `https://cdn.simpleicons.org/gmail/1eff00`,
     detail: "contact@joenoseph.co.uk",
   },
   {
     label: "Follow me on Instagram",
     href: "https://instagram.com/joenoseph",
-    icon: "https://cdn.simpleicons.org/instagram/22c55e",
+    icon: `https://cdn.simpleicons.org/instagram/1eff00`,
   },
   {
     label: "Connect on LinkedIn",
@@ -22,12 +22,12 @@ const contacts = [
   {
     label: "Check out my GitHub",
     href: "https://github.com/joethomas490",
-    icon: "https://cdn.simpleicons.org/github/22c55e",
+    icon: `https://cdn.simpleicons.org/github/1eff00`,
   },
 ];
 ---
 
-<BaseLayout title="about" description="About — joenoseph">
+<BaseLayout mode="about" title="about" description="About — joenoseph">
   <main class="max-w-2xl mx-auto px-6 pt-12 pb-16">
     <div class="relative mx-auto size-[280px]">
       <svg
@@ -42,7 +42,7 @@ const contacts = [
           ></path>
         </defs>
         <text
-          class="fill-green-500 text-[13.5px] font-semibold uppercase tracking-[5.2px]"
+          class="fill-(--color-accent) text-[13.5px] font-semibold uppercase tracking-[5.2px]"
         >
           <textPath href="#circlePath">
             photographer * games developer * creative * programmer *
@@ -50,7 +50,7 @@ const contacts = [
         </text>
       </svg>
       <div
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-40 rounded-full overflow-hidden border-2 border-green-800"
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-40 rounded-full overflow-hidden border-2 border-(--color-accent)"
       >
         <img
           src="https://assets.joenoseph.co.uk/me/3106Ava.webp"
@@ -80,7 +80,7 @@ const contacts = [
 
     <!-- Contact -->
     <section class="mt-12 max-w-3xl mx-auto">
-      <h2 class="text-2xl font-bold text-green-500 mb-4">Contact</h2>
+      <h2 class="text-2xl font-bold text-(--color-accent) mb-4">Contact</h2>
       <div
         class="border border-neutral-800 rounded-lg overflow-hidden divide-y divide-neutral-800"
       >
@@ -90,7 +90,7 @@ const contacts = [
               href={c.href}
               target="_blank"
               rel="noopener noreferrer"
-              class="group flex items-center gap-4 px-5 py-4 no-underline transition-colors duration-200 hover:bg-green-500 text-neutral-300 hover:text-neutral-950"
+              class="group flex items-center gap-4 px-5 py-4 no-underline transition-colors duration-200 hover:bg-(--color-accent) text-neutral-300 hover:text-neutral-950"
             >
               <img
                 src={c.icon}
