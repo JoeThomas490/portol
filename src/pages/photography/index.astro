@@ -9,6 +9,7 @@ const collectionNames = collectionsData.map((col) => col.name);
 
 <PhotographyLayout>
   <!-- Sidebar -->
+  { false && (
   <aside
     id="collections-sidebar"
     class="collections-sidebar z-20 md:z-5 flex flex-col overflow-hidden transition-all duration-300 ease-in-out collapsed"
@@ -67,6 +68,8 @@ const collectionNames = collectionsData.map((col) => col.name);
       </a>
     </div>
   </aside>
+  )
+  }
 
   <div
     id="sidebar-backdrop"
