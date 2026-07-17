@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import Favicons from "../components/Favicons.astro";
 import ModeBubble from "../components/ModeBubble.astro";
 
@@ -19,7 +19,7 @@ const { title, mode } = Astro.props;
     <meta name="description" content="Joe Thomas" />
     <Favicons variant={mode === "photography" ? "photo" : "dev"} />
     <title>Joe Thomas | {title}</title>
-    <ViewTransitions />
+    <ClientRouter />
   </head>
   <body
     class="min-h-dvh"
@@ -54,5 +54,4 @@ const { title, mode } = Astro.props;
   @import "../styles/global.css";
   @import "../styles/modes/photography.css";
   @import "../styles/modes/programming.css";
-  @import "../styles/transitions.css";
 </style>
