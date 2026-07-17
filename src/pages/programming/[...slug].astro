@@ -2,7 +2,7 @@
 import { getCollection, render } from "astro:content";
 import ExternalLink from "@lucide/astro/icons/external-link";
 import Tag from "@lucide/astro/icons/tag";
-import DeveloperLayout from "../../layouts/DeveloperLayout.astro";
+import ProgrammingLayout from "../../layouts/ProgrammingLayout.astro";
 import Button from "../../components/programming/Button.astro";
 
 export async function getStaticPaths() {
@@ -24,8 +24,8 @@ const meta = [
 ].filter((m) => m.value);
 ---
 
-<DeveloperLayout mode="programming">
-  <article class="flex flex-col rounded-2xl my-12 bg-black/20 backdrop-blur-sm">
+<ProgrammingLayout title={project.data.title}>
+  <article class="flex flex-col rounded-2xl my-12">
     {
       project.data.heroImage && (
         <div class="h-96 md:h-fit w-full p-4 aspect-21/9 overflow-hidden mb-10">
@@ -69,7 +69,7 @@ const meta = [
 
       {
         meta.length > 0 && (
-          <dl class="space-y-1 text-sm" style="color: var(--color-accent);">
+          <dl class="space-y-1 text-sm" style="color: var(--color-text);">
             {meta.map(({ label, value }) => (
               <div class="flex gap-2">
                 <dt class="font-semibold" style="color: var(--color-text);">
@@ -89,7 +89,7 @@ const meta = [
               <Tag class="w-4 h-4" />
             </span>
             {project.data.tags.map((tag: string) => (
-              <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-(--color-accent)/7 text-(--color-accent)/90 border border-(--color-accent)/20">
                 {tag.toLowerCase()}
               </span>
             ))}
@@ -106,13 +106,13 @@ const meta = [
       <a
         href="/programming"
         class="text-sm px-4 py-2 rounded-lg transition-colors duration-200"
-        style="color: var(--color-accent);"
+        style="color: var(--color-text);"
       >
         &larr; All Projects
       </a>
     </div>
   </article>
-</DeveloperLayout>
+</ProgrammingLayout>
 
 <style>
   .project-prose :global(h2) {
@@ -132,7 +132,7 @@ const meta = [
   }
 
   .project-prose :global(p) {
-    color: var(--color-accent);
+    color: var(--color-text);
     line-height: 1.75;
     margin-bottom: 1.25rem;
     max-width: 100%;
@@ -140,7 +140,7 @@ const meta = [
 
   .project-prose :global(ul),
   .project-prose :global(ol) {
-    color: var(--color-accent);
+    color: var(--color-text);
     line-height: 1.75;
     margin-bottom: 1.25rem;
     padding-left: 1.5rem;
@@ -191,7 +191,7 @@ const meta = [
   .project-prose :global(blockquote) {
     border-left: 3px solid var(--color-border);
     padding-left: 1rem;
-    color: var(--color-accent);
+    color: var(--color-text);
     font-style: italic;
     margin: 1.5rem 0;
   }

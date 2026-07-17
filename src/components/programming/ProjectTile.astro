@@ -14,7 +14,7 @@ const { href, title, description, heroImage, tags = [] } = Astro.props;
 
 <a
   href={href}
-  class="project-tile group flex flex-col overflow-hidden rounded-2xl border-2 border-white/20 shadow-md hover:shadow-xl transition-shadow duration-300 select-none"
+  class="project-tile group flex flex-col overflow-hidden rounded-2xl border-2 border-white/20 shadow-md hover:shadow-xl hover:border-(--color-accent)/75 transition-all duration-300 select-none"
 >
   <div class="relative aspect-square overflow-hidden">
     {
@@ -44,7 +44,7 @@ const { href, title, description, heroImage, tags = [] } = Astro.props;
             <Tag class="w-4 h-4" />
           </span>
           {tags.map((tag: string) => (
-            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-(--color-accent)/7 text-(--color-accent)/90 border border-(--color-accent)/20">
               {tag.toLowerCase()}
             </span>
           ))}

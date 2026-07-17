@@ -1,7 +1,7 @@
 [data-mode="programming"] {
-  --color-bg:rgb(30, 37, 52);
-  --color-text: #f0f0f0;
-  --color-accent: #a0a0a0;
+  --color-bg:#11111b;
+  --color-text:#cdd6f4;
+  --color-accent:#cba6f7;
   --color-muted: #1a1a1a;
   --color-border: #2a2a2a;
   --color-invert: #ffffff;

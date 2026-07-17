@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
+
 import Favicons from "../components/Favicons.astro";
 import ArrowLeft from "@lucide/astro/icons/arrow-left";
 
@@ -47,7 +48,8 @@ const faviconVariant =
           {
             !isLanding ? (
               <a
-                href="/"
+                href="#"
+                id="back-link"
                 class:list={[
                   "flex items-center gap-2 no-underline transition-colors duration-300",
                   mode === "base" ? "text-neutral-400 hover:text-white" : "",
@@ -132,6 +134,16 @@ const faviconVariant =
     </main>
   </body>
 </html>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const backLink = document.getElementById("back-link");
+    backLink?.addEventListener("click", (e) => {
+      e.preventDefault();
+      history.back();
+    });
+  });
+</script>
 
 <style is:global>
   @import "../styles/global.css";
