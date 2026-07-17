@@ -2,52 +2,96 @@
 import { ClientRouter } from "astro:transitions";
 import Favicons from "../components/Favicons.astro";
 import ModeBubble from "../components/ModeBubble.astro";
+import ArrowLeft from "@lucide/astro/icons/arrow-left";
 
 interface Props {
   title: string;
-  mode: "photography" | "programming";
+  description?: string;
+  mode?: "photography" | "programming" | "base";
 }
 
-const { title, mode } = Astro.props;
+const { title, description = "joenoseph", mode = "base" } = Astro.props;
+
+const isLanding = Astro.url.pathname === "/";
+const faviconVariant =
+  mode === "photography" ? "photo" : mode === "programming" ? "dev" : "base";
 ---
 
 <!doctype html>
-<html lang="en" data-mode={mode}>
+<html lang="en" data-mode={mode !== "base" ? mode : undefined}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Joe Thomas" />
-    <Favicons variant={mode === "photography" ? "photo" : "dev"} />
-    <title>joenoseph | {title}</title>
+    <meta name="description" content={description} />
+    <Favicons variant={faviconVariant} />
+    <title>{title.toLowerCase()} | joenoseph</title>
     <ClientRouter />
   </head>
   <body
-    class="min-h-dvh"
-    style={`background-color: var(--color-bg); color: var(--color-text);`}
+    class:list={[
+      "min-h-dvh",
+      mode === "base" && "bg-neutral-950 text-neutral-300",
+    ]}
+    style={mode !== "base"
+      ? `background-color: var(--color-bg); color: var(--color-text);`
+      : undefined}
   >
-    <nav transition:persist class="fixed top-0 left-0 right-0 z-50 p-6">
+    <nav transition:animate="none" class="fixed top-0 left-0 right-0 z-50 p-6">
       <div class="flex items-center justify-between">
         <div class="flex flex-col items-start gap-0">
-          <div class="flex items-center gap-2">
-            <a
-              href="/"
-              class="text-lg font-bold tracking-tight"
-              style="color: var(--color-text);"
-            >
-              joenoseph
-            </a>
-            <span class="text-lg text-green-500">*</span>
-          </div>
-          <span
-            class="text-lg font-bold tracking-tight text-orange-400 -mt-2"
-            id="mode-label"></span>
+          {
+            !isLanding ? (
+              <a
+                href="/"
+                class:list={[
+                  "flex items-center gap-2 no-underline transition-colors duration-300",
+                  mode === "base" ? "text-neutral-400 hover:text-white" : "",
+                ]}
+                style={
+                  mode !== "base" ? "color: var(--color-text);" : undefined
+                }
+              >
+                <ArrowLeft size={18} />
+                <span
+                  class="text-lg font-bold tracking-tight"
+                  style={
+                    mode !== "base"
+                      ? "color: var(--color-text);"
+                      : "color: white;"
+                  }
+                >
+                  joenoseph
+                </span>
+                <span class="text-lg text-green-500 -ml-1">*</span>
+              </a>
+            ) : (
+              <div class="flex items-center gap-0 ml-2">
+                <a
+                  href="/"
+                  class="text-lg font-bold tracking-tight"
+                  style="color: var(--color-text);"
+                >
+                  joenoseph
+                </a>
+                <span class="text-lg text-green-500 -ml-0">*</span>
+              </div>
+            )
+          }
+          {
+            mode !== "base" && (
+              <span
+                class="text-lg font-bold tracking-tight text-orange-400 -mt-2 ml-4"
+                id="mode-label"
+              >
+                {mode}
+              </span>
+            )
+          }
         </div>
       </div>
     </nav>
 
-    <ModeBubble />
-
-    <main class="pt-4">
+    <main class={mode !== "base" ? "pt-4" : ""}>
       <slot />
     </main>
   </body>

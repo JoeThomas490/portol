@@ -2,6 +2,13 @@
 
 @theme {
   --font-heading: "Poppins", system-ui, sans-serif;
+  --animate-spin-slow: spin-slow 20s linear infinite;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 :root {
