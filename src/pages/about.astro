@@ -2,6 +2,31 @@
 import { ClientRouter } from "astro:transitions";
 import Favicons from "../components/Favicons.astro";
 import ArrowLeft from "@lucide/astro/icons/arrow-left";
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+
+const contacts = [
+  {
+    label: "Write me an email",
+    href: "mailto:contact@joenoseph.co.uk",
+    icon: "https://cdn.simpleicons.org/gmail/22c55e",
+    detail: "contact@joenoseph.co.uk",
+  },
+  {
+    label: "Follow me on Instagram",
+    href: "https://instagram.com/joenoseph",
+    icon: "https://cdn.simpleicons.org/instagram/22c55e",
+  },
+  {
+    label: "Connect on LinkedIn",
+    href: "https://www.linkedin.com/in/jmthomas96/",
+    icon: "/icons/linkedin.png",
+  },
+  {
+    label: "Check out my GitHub",
+    href: "https://github.com/joethomas490",
+    icon: "https://cdn.simpleicons.org/github/22c55e",
+  },
+];
 ---
 
 <!doctype html>
@@ -30,22 +55,104 @@ import ArrowLeft from "@lucide/astro/icons/arrow-left";
       </div>
     </nav>
 
-    <main class="max-w-2xl mx-auto px-6 pt-28 pb-16">
-      <h1 class="text-4xl md:text-5xl font-black text-white mb-8">About</h1>
-      <div class="space-y-6 text-lg leading-relaxed">
+    <main class="max-w-2xl mx-auto px-6 pt-12 pb-16">
+      <div class="relative mx-auto size-[280px]">
+        <svg
+          class="absolute inset-0 size-full animate-spin-slow"
+          viewBox="0 0 300 300"
+          aria-hidden="true"
+        >
+          <defs>
+            <path
+              id="circlePath"
+              d="M 150,150 m -120,0 a 120,120 0 1,1 240,0 a 120,120 0 1,1 -240,0"
+            ></path>
+          </defs>
+          <text
+            class="fill-green-500 text-[13.5px] font-semibold uppercase tracking-[5.2px]"
+          >
+            <textPath href="#circlePath">
+              photographer * games developer * creative * programmer *
+            </textPath>
+          </text>
+        </svg>
+        <div
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-40 rounded-full overflow-hidden border-2 border-green-800"
+        >
+          <img
+            src="https://assets.joenoseph.co.uk/me/3106Ava.webp"
+            alt="Joe Thomas"
+            class="size-full object-cover"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-6 text-lg leading-relaxed mt-12 text-center">
+        <p>Welcome!</p>
         <p>
-          I'm Joe Thomas aka joenoseph — a photographer, programmer, and
-          creative.
+          I'm joenoseph, a photographer, games developer, creative and
+          programmer based in Liverpool, UK.
         </p>
         <p>
-          Explore my work through the sections on the landing page, or get in
-          touch.
+          This is my personal wiki, where I share my projects, photography,
+          thoughts and whatever else I feel. I'm hoping this will be a fun way
+          to share my work instead of using social media and it getting lost in
+          the algorthmic void.
+        </p>
+        <p>
+          Hope you have fun browsin' around! Feel free to reach out if you'd
+          like to chat, work together or just say hi.
         </p>
       </div>
+
+      <!-- Contact -->
+      <section class="mt-20 max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-green-500 mb-4">Contact</h2>
+        <div
+          class="border border-neutral-800 rounded-lg overflow-hidden divide-y divide-neutral-800"
+        >
+          {
+            contacts.map((c) => (
+              <a
+                href={c.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group flex items-center gap-4 px-5 py-4 no-underline transition-colors duration-200 hover:bg-green-500 text-neutral-300 hover:text-neutral-950"
+              >
+                <img
+                  src={c.icon}
+                  alt=""
+                  class="size-5 shrink-0 group-hover:brightness-0"
+                />
+                <span class="flex-1 font-medium">{c.label}</span>
+                {c.detail && (
+                  <span class="hidden sm:block text-sm text-neutral-500 group-hover:text-neutral-800">
+                    {c.detail}
+                  </span>
+                )}
+                <ArrowRight
+                  size={16}
+                  class="shrink-0 text-neutral-600 group-hover:text-neutral-950"
+                />
+              </a>
+            ))
+          }
+        </div>
+      </section>
     </main>
   </body>
 </html>
 
 <style is:global>
   @import "../styles/global.css";
+
+  @theme {
+    --animate-spin-slow: spin-slow 20s linear infinite;
+  }
+
+  @keyframes spin-slow {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 </style>
