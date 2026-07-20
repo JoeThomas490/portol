@@ -4,17 +4,15 @@ interface Props {
   label: string;
   icon?: string;
   class?: string;
-  download?: boolean;
 }
 
-const { href, label, icon, class: className, download } = Astro.props;
+const { href, label, icon, class: className } = Astro.props;
 const isExternal = href.startsWith("http") || href.startsWith("mailto:");
 ---
 
 <a
   href={href}
   {...isExternal && { target: "_blank", rel: "noopener noreferrer" }}
-  {...download && { download: true }}
   class:list={[
     "relative h-8 md:h-12 w-fit min-w-4 md:min-w-12 px-4 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-3xl transition-all duration-200 flex items-center justify-center gap-2 font-medium text-sm",
     className,
@@ -24,36 +22,3 @@ const isExternal = href.startsWith("http") || href.startsWith("mailto:");
   {icon && <img src={icon} alt={label} class="w-4 md:w-6 h-4 md:h-6" />}
   <slot />
 </a>
-
-<style>
-  .gradient-ring {
-    --border-width: 2px;
-    --gradient: linear-gradient(to top, rgb(193, 168, 237), #7c3aed);
-    --gradient-hover: linear-gradient(to top, rgb(193, 168, 237), #a855f7);
-  }
-
-  .gradient-ring::before {
-    content: "";
-    position: absolute;
-    inset: calc(-1 * var(--border-width));
-    border-radius: calc(var(--tw-radius-lg, 0.5rem) + var(--border-width));
-    background: var(--gradient);
-    opacity: 0.4;
-    transition: opacity 0.2s;
-    z-index: -1;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    padding: var(--border-width);
-  }
-
-  .gradient-ring:hover::before {
-    background: var(--gradient-hover);
-    opacity: 1;
-  }
-</style>
