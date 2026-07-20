@@ -33,12 +33,16 @@ const modes = [
   //   icon: Book,
   // },
 ];
+const TRANSITION_MS = 600;
 ---
 
 <BaseLayout title="portfolio">
-  <div class="h-dvh flex flex-col overflow-hidden">
+  <div
+    class="bookshelf h-dvh flex flex-col overflow-hidden"
+    style={`--bookshelf-transition-duration: ${TRANSITION_MS}ms`}
+  >
     <div class="flex flex-col flex-1 min-h-0">
-      <div class="flex flex-1 min-h-0">
+      <div class="bookshelf-row flex flex-4 min-h-0">
         {
           modes.map((mode) => {
             const Tag = mode.href ? "a" : "div";
@@ -48,13 +52,12 @@ const modes = [
                 href={mode.href}
                 class:list={[
                   "bookshelf-slice group relative flex flex-col items-center justify-center gap-4 overflow-hidden",
-                  "transition-all duration-500 ease-[cubic-bezier(0.25,0,0.2,1)]",
                   "border-r-4 border-white last:border-r-0",
                   mode.href ? "cursor-pointer" : "cursor-default",
                 ]}
               >
                 <div
-                  class="absolute inset-0 bg-cover bg-center grayscale group-hover:grayscale-0 transition-[filter] duration-700 ease-[cubic-bezier(0.25,0,0.2,1)]"
+                  class="absolute inset-0 bg-cover bg-center grayscale group-hover:grayscale-0 transition-all duration-700 ease-[cubic-bezier(0.25,0,0.2,1)]"
                   style={`background-image: url('${mode.image}');`}
                 />
                 <div class="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-500" />
@@ -82,10 +85,10 @@ const modes = [
 
       <a
         href="/about"
-        class="about-bar h-[20%] hover:h-[40%] group relative z-20 flex items-center justify-center py-4 border-t-4 border-white no-underline transition-all duration-300 overflow-hidden"
+        class="about-bar flex-1 hover:flex-3 group relative z-20 flex items-center justify-center py-4 border-t-4 border-white no-underline overflow-hidden min-h-0"
       >
         <div
-          class="absolute inset-0 bg-cover grayscale group-hover:grayscale-0 transition-[filter] duration-700 ease-[cubic-bezier(0.25,0,0.2,1)]"
+          class="absolute inset-0 bg-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-[cubic-bezier(0.25,0,0.2,1)]"
           style="background-image: url('https://assets.joenoseph.co.uk/about/header.webp'); background-position: center 50%;"
         >
         </div>
@@ -113,7 +116,69 @@ const modes = [
   </div>
 </BaseLayout>
 
+<script>
+  import { navigate } from "astro:transitions/client";
+
+  function getBookshelfTransitionMs(bookshelf: Element) {
+    const raw = getComputedStyle(bookshelf).getPropertyValue(
+      "--bookshelf-transition-duration",
+    );
+    const ms = Number.parseFloat(raw);
+    return Number.isFinite(ms) ? ms : 1000;
+  }
+
+  document.addEventListener(
+    "click",
+    (e) => {
+      const target = (e.target as Element).closest<HTMLAnchorElement>(
+        ".bookshelf-slice[href], .about-bar[href]",
+      );
+      if (!target?.href) return;
+
+      const bookshelf = target.closest(".bookshelf");
+      if (!bookshelf) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (bookshelf.classList.contains("bookshelf-navigating")) return;
+
+      const href = target.getAttribute("href");
+      if (!href) return;
+
+      const isAbout = target.classList.contains("about-bar");
+
+      bookshelf.classList.add("bookshelf-navigating");
+      if (isAbout) {
+        bookshelf.classList.add("bookshelf-navigating-about");
+        target.classList.add("about-bar--active");
+      } else {
+        target.classList.add("bookshelf-slice--active");
+      }
+
+      const transitionMs = getBookshelfTransitionMs(bookshelf);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTimeout(() => navigate(href), transitionMs + 150);
+        });
+      });
+    },
+    true,
+  );
+</script>
+
 <style is:global>
+  .bookshelf-row,
+  .bookshelf-slice,
+  .about-bar {
+    transition-property:
+      flex-grow, flex-shrink, flex-basis, opacity, border-color, border-width,
+      padding, filter;
+    transition-duration: var(--bookshelf-transition-duration, 1000ms);
+    transition-timing-function: cubic-bezier(0.25, 0, 0.2, 1);
+  }
+
   .writing-vertical {
     writing-mode: vertical-lr;
     text-orientation: mixed;
@@ -126,5 +191,75 @@ const modes = [
 
   .bookshelf-slice:hover {
     flex: 3 1 0%;
+  }
+
+  .bookshelf-navigating:not(.bookshelf-navigating-about)
+    .bookshelf-slice:hover {
+    flex: 1 1 0%;
+  }
+
+  .bookshelf-navigating:not(.bookshelf-navigating-about)
+    .bookshelf-slice:not(.bookshelf-slice--active) {
+    flex: 0 0 0%;
+    min-width: 0;
+    opacity: 0;
+    border-right-width: 0;
+  }
+
+  .bookshelf-navigating:not(.bookshelf-navigating-about)
+    .bookshelf-slice--active {
+    flex: 1 1 100%;
+    z-index: 60;
+    border-right-width: 0;
+  }
+
+  .bookshelf-navigating:not(.bookshelf-navigating-about)
+    .bookshelf-slice--active
+    > div:first-child {
+    filter: grayscale(0);
+  }
+
+  .bookshelf-navigating:not(.bookshelf-navigating-about)
+    .bookshelf-slice--active
+    > *:not(div) {
+    opacity: 0;
+  }
+
+  .bookshelf-navigating:not(.bookshelf-navigating-about) .about-bar {
+    flex: 0 0 0%;
+    min-height: 0;
+    opacity: 0;
+    border-top-width: 0;
+    padding-block: 0;
+    pointer-events: none;
+  }
+
+  .bookshelf-navigating.bookshelf-navigating-about .bookshelf-row {
+    flex: 0 0 0%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .bookshelf-navigating.bookshelf-navigating-about .about-bar--active {
+    flex: 1 1 0%;
+    min-height: 0;
+    z-index: 60;
+    border-top-width: 0;
+  }
+
+  .bookshelf-navigating.bookshelf-navigating-about
+    .about-bar--active
+    > div:first-child {
+    filter: grayscale(0);
+  }
+
+  .bookshelf-navigating.bookshelf-navigating-about .about-bar:hover {
+    flex: 1 1 0%;
+  }
+
+  .bookshelf-navigating.bookshelf-navigating-about
+    .about-bar--active
+    > .relative {
+    opacity: 0;
   }
 </style>

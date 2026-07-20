@@ -1,5 +1,5 @@
 ---
-import { ClientRouter } from "astro:transitions";
+import { ClientRouter, fade } from "astro:transitions";
 
 import Favicons from "../components/Favicons.astro";
 import ArrowLeft from "@lucide/astro/icons/arrow-left";
@@ -19,10 +19,20 @@ const navLinks = [
 const { title, description = "joenoseph", mode = "base" } = Astro.props;
 
 const isLanding = Astro.url.pathname === "/";
+
+const customFade = {
+  forwards: fade({ duration: "0.4s" }).forwards,
+  backwards: fade({ duration: "0.2s" }).backwards,
+};
 ---
 
 <!doctype html>
-<html lang="en" data-mode={mode !== "base" ? mode : undefined}>
+<html
+  lang="en"
+  data-mode={mode !== "base" ? mode : undefined}
+  transition:name="root"
+  transition:animate="none"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -40,7 +50,10 @@ const isLanding = Astro.url.pathname === "/";
       ? `background-color: var(--color-bg); color: var(--color-text);`
       : undefined}
   >
-    <nav transition:animate="none" class="fixed top-0 left-0 right-0 z-50 p-6">
+    <nav
+      transition:animate={customFade}
+      class="fixed top-0 left-0 right-0 z-50 p-6"
+    >
       <div class="flex items-start justify-between">
         <div class="flex flex-col items-start gap-0 text-(--color-text)">
           {
@@ -127,7 +140,7 @@ const isLanding = Astro.url.pathname === "/";
       </div>
     </nav>
 
-    <main class={mode !== "base" ? "pt-4" : ""}>
+    <main class={mode !== "base" ? "pt-4" : ""} transition:animate={customFade}>
       <slot />
     </main>
   </body>
@@ -148,4 +161,13 @@ const isLanding = Astro.url.pathname === "/";
   @import "../styles/modes/photography.css";
   @import "../styles/modes/programming.css";
   @import "../styles/modes/about.css";
+
+  @keyframes fade {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 </style>
