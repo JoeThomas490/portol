@@ -22,7 +22,7 @@ const isLanding = Astro.url.pathname === "/";
 
 const customFade = {
   forwards: fade({ duration: "0.4s" }).forwards,
-  backwards: fade({ duration: "0.2s" }).backwards,
+  backwards: fade({ duration: "0.4s" }).backwards,
 };
 ---
 
@@ -31,7 +31,7 @@ const customFade = {
   lang="en"
   data-mode={mode !== "base" ? mode : undefined}
   transition:name="root"
-  transition:animate="none"
+  transition:animate={customFade}
 >
   <head>
     <meta charset="UTF-8" />
@@ -158,6 +158,7 @@ const customFade = {
 
 <style is:global>
   @import "../styles/global.css";
+  @import "../styles/transitions.css";
   @import "../styles/modes/photography.css";
   @import "../styles/modes/programming.css";
   @import "../styles/modes/about.css";
