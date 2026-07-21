@@ -1,10 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import LandingIntro from "../components/LandingIntro.astro";
 import Camera from "@lucide/astro/icons/camera";
 import CodeXml from "@lucide/astro/icons/code-xml";
 import User from "@lucide/astro/icons/user";
 import Palette from "@lucide/astro/icons/palette";
 import Book from "@lucide/astro/icons/book";
+
+const ABOUT_HEADER_IMAGE = "https://assets.joenoseph.co.uk/about/header.webp";
+
 const modes = [
   {
     name: "Photography",
@@ -33,10 +37,17 @@ const modes = [
   //   icon: Book,
   // },
 ];
+
+const headerImageUrls = [
+  ...modes.map((mode) => mode.image),
+  ABOUT_HEADER_IMAGE,
+];
+
 const TRANSITION_MS = 600;
 ---
 
 <BaseLayout title="portfolio">
+  <LandingIntro imageUrls={headerImageUrls} />
   <div
     class="bookshelf h-dvh flex flex-col overflow-hidden"
     style={`--bookshelf-transition-duration: ${TRANSITION_MS}ms`}
@@ -89,7 +100,7 @@ const TRANSITION_MS = 600;
       >
         <div
           class="absolute inset-0 bg-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-[cubic-bezier(0.25,0,0.2,1)]"
-          style="background-image: url('https://assets.joenoseph.co.uk/about/header.webp'); background-position: center 50%;"
+          style={`background-image: url('${ABOUT_HEADER_IMAGE}'); background-position: center 50%;`}
         >
         </div>
         <div

@@ -1,0 +1,122 @@
+---
+interface Props {
+  imageUrls: string[];
+}
+
+const { imageUrls } = Astro.props;
+---
+
+<div
+  id="landing-intro"
+  class="landing-intro fixed inset-0 z-60 pointer-events-auto"
+  aria-hidden="true"
+>
+  <div class="landing-intro__backdrop absolute inset-0 bg-black"></div>
+  <div
+    class="landing-intro__logo fixed left-1/2 top-1/2 flex items-center gap-0 z-61"
+  >
+    <span class="text-lg font-bold tracking-tight text-white">joenoseph</span>
+    <span class="text-lg text-white ml-1">*</span>
+  </div>
+</div>
+
+<script define:vars={{ imageUrls }}>
+  const INTRO_DELAY_MS = 500;
+  const INTRO_MOVE_MS = 800;
+  const PRELOAD_TIMEOUT_MS = 2000;
+  const INTRO_KEY = "landing-intro-seen";
+  const EASING = "cubic-bezier(0.25, 0, 0.2, 1)";
+
+  function preloadImages(urls, timeoutMs) {
+    return Promise.race([
+      Promise.all(
+        urls.map(
+          (url) =>
+            new Promise((resolve) => {
+              const img = new Image();
+              img.onload = resolve;
+              img.onerror = resolve;
+              img.src = url;
+            }),
+        ),
+      ),
+      new Promise((resolve) => setTimeout(resolve, timeoutMs)),
+    ]);
+  }
+
+  function finishIntro(intro) {
+    intro.remove();
+    sessionStorage.setItem(INTRO_KEY, "true");
+  }
+
+  function runLandingIntro() {
+    const intro = document.getElementById("landing-intro");
+    // if (intro && sessionStorage.getItem(INTRO_KEY)) {
+    //   return finishIntro(intro);
+    // }
+    if (window.location.pathname !== "/") return;
+
+    const target = document.getElementById("site-logo");
+    const flyer = intro?.querySelector(".landing-intro__logo");
+    const backdrop = intro?.querySelector(".landing-intro__backdrop");
+
+    if (!intro || !target || !flyer || !backdrop) return;
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    async function start() {
+      if (reducedMotion) {
+        finishIntro(intro);
+        return;
+      }
+
+      await preloadImages(imageUrls, PRELOAD_TIMEOUT_MS);
+      await new Promise((resolve) => setTimeout(resolve, INTRO_DELAY_MS));
+
+      const targetRect = target.getBoundingClientRect();
+      const flyerRect = flyer.getBoundingClientRect();
+
+      const dx =
+        targetRect.left +
+        targetRect.width / 2 -
+        (flyerRect.left + flyerRect.width / 2);
+      const dy =
+        targetRect.top +
+        targetRect.height / 2 -
+        (flyerRect.top + flyerRect.height / 2);
+
+      flyer.style.transition = `transform ${INTRO_MOVE_MS}ms ${EASING}`;
+      backdrop.style.transition = `opacity ${INTRO_MOVE_MS}ms ${EASING}`;
+
+      requestAnimationFrame(() => {
+        flyer.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        backdrop.style.opacity = "0";
+      });
+
+      let finished = false;
+      const complete = () => {
+        if (finished) return;
+        finished = true;
+        finishIntro(intro);
+      };
+
+      setTimeout(complete, INTRO_MOVE_MS + 100);
+    }
+
+    start();
+  }
+
+  document.addEventListener("astro:page-load", runLandingIntro);
+</script>
+
+<style>
+  .landing-intro__logo {
+    transform: translate(-50%, -50%);
+  }
+
+  :global(body:has(#landing-intro) #site-logo) {
+    visibility: hidden;
+  }
+</style>
