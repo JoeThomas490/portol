@@ -101,7 +101,7 @@ const cells = GRID_PLACEMENTS.map((placement, i) => {
   }
 
   .grid-cell:hover {
-    background-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+    background-color: color-mix(in srgb, var(--color-accent) 80%, transparent);
   }
 
   .grid-cell:focus-visible {
@@ -194,24 +194,77 @@ const cells = GRID_PLACEMENTS.map((placement, i) => {
     const nameEl = document.getElementById("hover-name");
     const dateEl = document.getElementById("hover-date");
 
-    const timers = [];
-    const timeouts = [];
-    let paused = false;
+    const swapDelay = FADE_DURATION_MS / 2;
 
-    if (grid) {
-      grid.addEventListener("mouseenter", () => {
-        paused = true;
-      });
-      grid.addEventListener("mouseleave", () => {
-        paused = false;
-      });
-    }
+    const cellState = cells
+      .map((cell, i) => {
+        const raw = cell.getAttribute("data-photos") ?? "[]";
+        let photos = [];
+        try {
+          photos = JSON.parse(raw);
+        } catch {
+          photos = [];
+        }
 
-    function clearAll() {
-      timers.forEach((t) => clearInterval(t));
-      timeouts.forEach((t) => clearTimeout(t));
-      timers.length = 0;
-      timeouts.length = 0;
+        const img = cell.querySelector(".cell-img");
+        if (!img || photos.length <= 1) return null;
+
+        const startDelay =
+          CYCLE_STAGGER_MS * Math.random() +
+          i * CYCLE_VARIANCE_MS * Math.random();
+
+        return {
+          img,
+          photos,
+          index: 0,
+          timeUntilFade: CYCLE_INTERVAL_MS + startDelay,
+          fadeRemaining: 0,
+          pendingSrc: null,
+        };
+      })
+      .filter((s) => s !== null);
+
+    let rafId = 0;
+    let lastTick = 0;
+    let stopped = false;
+
+    function tick(now) {
+      if (stopped) return;
+      if (lastTick === 0) lastTick = now;
+
+      const rawDt = now - lastTick;
+      const isPaused = grid
+        ? grid.querySelector(".grid-cell:hover") !== null
+        : false;
+      // Cap dt so a background tab / long frame can't fast-forward everything.
+      const dt = isPaused ? 0 : Math.min(rawDt, 100);
+      lastTick = now;
+
+      for (const s of cellState) {
+        if (s.fadeRemaining > 0) {
+          s.fadeRemaining -= dt;
+          if (s.fadeRemaining <= 0) {
+            if (s.pendingSrc !== null) {
+              s.img.src = s.pendingSrc;
+              s.pendingSrc = null;
+            }
+            s.img.classList.remove("is-fading");
+            s.fadeRemaining = 0;
+            s.timeUntilFade = CYCLE_INTERVAL_MS;
+          }
+          continue;
+        }
+
+        s.timeUntilFade -= dt;
+        if (s.timeUntilFade <= 0) {
+          s.index = (s.index + 1) % s.photos.length;
+          s.pendingSrc = s.photos[s.index];
+          s.img.classList.add("is-fading");
+          s.fadeRemaining = swapDelay;
+        }
+      }
+
+      rafId = requestAnimationFrame(tick);
     }
 
     function formatDate(iso) {
@@ -224,40 +277,7 @@ const cells = GRID_PLACEMENTS.map((placement, i) => {
       });
     }
 
-    cells.forEach((cell, i) => {
-      const raw = cell.getAttribute("data-photos") ?? "[]";
-      let photos = [];
-      try {
-        photos = JSON.parse(raw);
-      } catch {
-        photos = [];
-      }
-
-      const img = cell.querySelector(".cell-img");
-      if (img && photos.length > 1) {
-        let index = 0;
-        const startDelay =
-          CYCLE_STAGGER_MS * Math.random() +
-          i * CYCLE_VARIANCE_MS * Math.random();
-        const swapDelay = Math.round(FADE_DURATION_MS / 2);
-
-        timeouts.push(
-          setTimeout(() => {
-            const timer = setInterval(() => {
-              if (paused) return;
-              index = (index + 1) % photos.length;
-              const next = photos[index];
-              img.classList.add("is-fading");
-              setTimeout(() => {
-                img.src = next;
-                img.classList.remove("is-fading");
-              }, swapDelay);
-            }, CYCLE_INTERVAL_MS);
-            timers.push(timer);
-          }, startDelay),
-        );
-      }
-
+    cells.forEach((cell) => {
       cell.addEventListener("mouseenter", () => {
         if (!panel || !nameEl || !dateEl) return;
         const name = cell.getAttribute("data-name") ?? "";
@@ -287,7 +307,16 @@ const cells = GRID_PLACEMENTS.map((placement, i) => {
       });
     });
 
-    document.addEventListener("astro:before-swap", clearAll, { once: true });
+    function stop() {
+      stopped = true;
+      if (rafId !== 0) cancelAnimationFrame(rafId);
+    }
+
+    document.addEventListener("astro:before-swap", stop, { once: true });
+
+    if (cellState.length > 0) {
+      rafId = requestAnimationFrame(tick);
+    }
   }
 
   document.addEventListener("astro:page-load", setupPhotoGrid);
