@@ -3,6 +3,7 @@ import { listR2Images } from "./r2";
 
 export type PhotoCollection = {
   name: string;
+  date?: Date;
   photos: {
     src: string;
     alt: string;
@@ -19,6 +20,7 @@ export async function getPhotoCollections(): Promise<PhotoCollection[]> {
 
       return {
         name: entry.data.collection,
+        date: entry.data.date,
         photos: images.map((image) => ({
           src: image.src,
           alt: entry.data.alt ?? image.alt,

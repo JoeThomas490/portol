@@ -5,7 +5,7 @@
   }
 
   [data-mode="photography"]::view-transition-group(root) {
-    background-color: #ffffff;
+    background-color: #0d0d0d;
   }
 
   [data-mode="programming"]::view-transition-group(root) {

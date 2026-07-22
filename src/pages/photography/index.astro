@@ -1,315 +1,294 @@
 ---
 import PhotographyLayout from "../../layouts/PhotographyLayout.astro";
 import { getPhotoCollections } from "../../lib/photography";
-import ChevronLeft from "@lucide/astro/icons/chevron-left";
+import {
+  GRID_COLUMNS,
+  GRID_PLACEMENTS,
+  getGridCollections,
+} from "../../lib/photographyGrid";
 
-const collectionsData = await getPhotoCollections();
-const collectionNames = collectionsData.map((col) => col.name);
+const CYCLE_INTERVAL_MS = 4500;
+const CYCLE_STAGGER_MS = 600;
+const CYCLE_VARIANCE_MS = 750;
+const FADE_DURATION_MS = 400;
+
+const realCollections = await getPhotoCollections();
+const collections = getGridCollections(realCollections);
+
+const cells = GRID_PLACEMENTS.map((placement, i) => {
+  const collection = collections[placement.collectionIndex];
+  return {
+    id: `cell-${i}`,
+    placement,
+    name: collection?.name ?? "",
+    date: collection?.date ? collection.date.toISOString().slice(0, 10) : "",
+    photos: collection?.photos.map((p) => p.src) ?? [],
+    alt: collection?.photos[0]?.alt ?? collection?.name ?? "",
+  };
+});
 ---
 
 <PhotographyLayout>
-  <!-- Sidebar -->
-  { false && (
-  <aside
-    id="collections-sidebar"
-    class="collections-sidebar z-20 md:z-5 flex flex-col overflow-hidden transition-all duration-300 ease-in-out collapsed"
-    style="background-color: var(--color-bg);"
-  >
-    <!-- Title bar — always visible, acts as toggle -->
-    <button
-      id="sidebar-toggle"
-      class="flex items-center gap-2 px-5 py-4 w-full bg-transparent border-none cursor-pointer"
-      style="color: var(--color-accent);"
+  <div class="grid-scroll flex-1 min-w-0 h-full overflow-auto">
+    <div
+      class="photo-grid"
+      style={`--grid-cols: ${GRID_COLUMNS}; --cell-fade-ms: ${FADE_DURATION_MS}ms;`}
     >
-      <h2
-        id="active-collection-name"
-        class="text-[0.65rem] font-bold tracking-widest uppercase m-0"
-      >
-        {collectionNames[0] ?? "Collections"}
-      </h2>
-      <span
-        id="sidebar-chevron"
-        class="flex items-center transition-transform duration-300"
-      >
-        <ChevronLeft size={12} />
-      </span>
-    </button>
-
-    <div class="flex flex-col justify-start flex-1 min-h-0">
-      <!-- Collection list -->
-      <nav
-        id="collections-nav"
-        class="flex flex-col overflow-hidden transition-all duration-300 ease-in-out opacity-100 max-h-[500px]"
-      >
-        {
-          collectionsData.map((col, ci) => (
-            <div class="last:border-b-0" data-collection-index={ci}>
-              <button
-                class:list={[
-                  "collection-header flex items-center justify-between w-full px-6 py-2.5 bg-transparent border-none cursor-pointer text-[0.8125rem] font-medium transition-colors duration-150",
-                  ci === 0 && "is-active",
-                ]}
-                style="color: var(--color-text);"
-                data-collection={ci}
-              >
-                <span>{col.name}</span>
-              </button>
-            </div>
-          ))
-        }
-      </nav>
-
-      <a
-        href="/photography/about"
-        class="sidebar-about-link mt-auto block px-5 py-4 text-[0.65rem] font-bold tracking-widest no-underline uppercase transition-colors duration-150"
-        style="color: var(--color-accent);"
-      >
-        About
-      </a>
+      {
+        cells.map((cell) => (
+          <a
+            id={cell.id}
+            href="/photography/slideshow"
+            class="grid-cell"
+            style={`grid-column: ${cell.placement.col}; grid-row: ${cell.placement.row};`}
+            data-cell-id={cell.id}
+            data-name={cell.name}
+            data-date={cell.date}
+            data-photos={JSON.stringify(cell.photos)}
+            aria-label={cell.name}
+          >
+            {cell.photos.length > 0 ? (
+              <img
+                src={cell.photos[0]}
+                alt={cell.alt}
+                loading="lazy"
+                decoding="async"
+                class="cell-img"
+              />
+            ) : (
+              <div class="cell-placeholder" aria-hidden="true" />
+            )}
+          </a>
+        ))
+      }
     </div>
-  </aside>
-  )
-  }
-
-  <div
-    id="sidebar-backdrop"
-    class="sidebar-backdrop absolute -inset-10 -mt-10 z-10 bg-black/20 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
-    aria-hidden="true"
-  >
   </div>
 
-  <!-- Photo viewer -->
-  <div
-    id="photo-viewer"
-    class="w-full min-w-0 flex-1 h-full relative flex items-center justify-center overflow-hidden"
-  >
-    {
-      collectionsData.length === 0 ? (
-        <p class="text-sm" style="color: var(--color-accent);">
-          No collections found. Add a collection markdown file and upload images
-          to the matching R2 prefix.
-        </p>
-      ) : (
-        collectionsData.map((col, ci) =>
-          col.photos.map((photo, pi) => (
-            <figure
-              class:list={[
-                "photo-slide absolute inset-0 flex items-center justify-center p-3 sm:p-4 md:p-0 transition-opacity duration-500",
-                ci === 0 && pi === 0
-                  ? "opacity-100"
-                  : "opacity-0 pointer-events-none",
-              ]}
-              data-collection={ci}
-              data-photo={pi}
-            >
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                class="max-w-full max-h-[calc(100vh-11rem)] md:max-h-full object-contain"
-              />
-            </figure>
-          )),
-        )
-      )
-    }
-
-    {
-      collectionsData.length > 0 && (
-        <>
-          <button
-            id="nav-prev"
-            class="absolute left-0 top-0 w-1/3 h-full z-10 cursor-w-resize opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-start pl-6"
-            aria-label="Previous photo"
-          >
-            <span
-              class="text-3xl select-none"
-              style="color: var(--color-accent);"
-            >
-              &#8249;
-            </span>
-          </button>
-
-          <button
-            id="nav-next"
-            class="absolute right-0 top-0 w-1/3 h-full z-10 cursor-e-resize opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-end pr-6"
-            aria-label="Next photo"
-          >
-            <span
-              class="text-3xl select-none"
-              style="color: var(--color-accent);"
-            >
-              &#8250;
-            </span>
-          </button>
-        </>
-      )
-    }
+  <div id="hover-panel" class="hover-panel" aria-hidden="true">
+    <span id="hover-name" class="hover-name"></span>
+    <span id="hover-date" class="hover-date"></span>
   </div>
 </PhotographyLayout>
 
 <style>
-  .collection-header:hover {
-    background-color: var(--color-muted);
+  .grid-scroll {
+    padding: 0.75rem;
+    box-sizing: border-box;
   }
 
-  .collection-header.is-active span {
-    font-weight: 600;
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols, 6), 1fr);
+    grid-auto-rows: min(calc(100vw / var(--grid-cols, 6)), 250px);
+    gap: 4px;
+    width: 100%;
   }
 
-  .sidebar-about-link:hover {
-    color: var(--color-text);
+  .grid-cell {
+    position: relative;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: transparent;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+    transition:
+      opacity 0.25s ease,
+      filter 0.25s ease;
   }
 
-  #collections-sidebar {
-    position: absolute;
-    top: 3rem;
-    left: 0;
-    bottom: 0;
-    width: min(240px, 85vw);
+  .grid-cell:hover {
+    background-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
   }
 
-  #collections-sidebar.collapsed {
+  .grid-cell:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .photo-grid:has(.grid-cell:hover) .grid-cell:not(:hover),
+  .photo-grid:has(.grid-cell:focus-visible) .grid-cell:not(:focus-visible) {
+    opacity: 0.1;
+    filter: grayscale(1);
+  }
+
+  .cell-img {
+    max-width: 100%;
+    max-height: 100%;
     width: auto;
-    min-width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin-top: auto;
+    margin-right: auto;
+    transition: opacity var(--cell-fade-ms, 400ms) ease;
   }
 
-  #collections-sidebar.collapsed #collections-nav {
-    max-height: 0;
+  .cell-img.is-fading {
     opacity: 0;
   }
 
-  #collections-sidebar.collapsed #sidebar-chevron {
-    transform: rotate(180deg);
+  .cell-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-muted);
   }
 
-  @media (max-width: 767px) {
-    #collections-sidebar.collapsed {
-      bottom: auto;
-      height: auto;
-      border-bottom-right-radius: 0.75rem;
-      box-shadow: 0 4px 24px rgb(0 0 0 / 12%);
-    }
-
-    #collections-sidebar:not(.collapsed) {
-      box-shadow: 4px 0 24px rgb(0 0 0 / 12%);
-    }
-
-    #collections-sidebar:not(.collapsed) + .sidebar-backdrop {
-      opacity: 1;
-      pointer-events: auto;
-    }
+  .hover-panel {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 40;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 1.2rem 1.2rem;
+    background-color: var(--color-accent);
+    color: var(--color-invert);
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
+    max-width: min(80vw, 420px);
   }
 
-  @media (min-width: 768px) {
-    #collections-sidebar {
-      position: relative;
-      top: auto;
-      left: auto;
-      bottom: auto;
-      margin-top: 3rem;
-      height: calc(100% - 3rem);
-      width: 220px;
-      min-width: 220px;
-      flex-shrink: 0;
-      box-shadow: none;
-      border-radius: 0;
-    }
+  .hover-panel.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
-    #collections-sidebar.collapsed {
-      width: auto;
-      min-width: auto;
-      height: calc(100% - 3rem);
-    }
+  .hover-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+  }
+
+  .hover-date {
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    line-height: 1.1;
   }
 </style>
 
-<script define:vars={{ collectionsData }}>
-  function setupPhotoViewer() {
-    let currentCollection = 0;
-    let currentPhoto = 0;
+<script
+  define:vars={{
+    CYCLE_INTERVAL_MS,
+    CYCLE_STAGGER_MS,
+    CYCLE_VARIANCE_MS,
+    FADE_DURATION_MS,
+  }}
+>
+  function setupPhotoGrid() {
+    const grid = document.querySelector(".photo-grid");
+    const cells = Array.from(document.querySelectorAll(".grid-cell"));
+    const panel = document.getElementById("hover-panel");
+    const nameEl = document.getElementById("hover-name");
+    const dateEl = document.getElementById("hover-date");
 
-    const sidebar = document.getElementById("collections-sidebar");
-    const toggle = document.getElementById("sidebar-toggle");
-    const backdrop = document.getElementById("sidebar-backdrop");
-    const slides = document.querySelectorAll(".photo-slide");
-    const headers = document.querySelectorAll(".collection-header");
-    const activeLabel = document.getElementById("active-collection-name");
+    const timers = [];
+    const timeouts = [];
+    let paused = false;
 
-    if (toggle && sidebar) {
-      toggle.addEventListener("click", () => {
-        sidebar.classList.toggle("collapsed");
+    if (grid) {
+      grid.addEventListener("mouseenter", () => {
+        paused = true;
+      });
+      grid.addEventListener("mouseleave", () => {
+        paused = false;
       });
     }
 
-    if (backdrop && sidebar) {
-      backdrop.addEventListener("click", () => {
-        sidebar.classList.add("collapsed");
+    function clearAll() {
+      timers.forEach((t) => clearInterval(t));
+      timeouts.forEach((t) => clearTimeout(t));
+      timers.length = 0;
+      timeouts.length = 0;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return "";
+      return d.toLocaleDateString("en-GB", {
+        month: "short",
+        year: "numeric",
       });
     }
 
-    function showPhoto(ci, pi) {
-      slides.forEach((slide) => {
-        const sc = Number(slide.getAttribute("data-collection"));
-        const sp = Number(slide.getAttribute("data-photo"));
-        if (sc === ci && sp === pi) {
-          slide.classList.remove("opacity-0", "pointer-events-none");
-          slide.classList.add("opacity-100");
-        } else {
-          slide.classList.add("opacity-0", "pointer-events-none");
-          slide.classList.remove("opacity-100");
-        }
-      });
-
-      headers.forEach((h) => {
-        const hc = Number(h.getAttribute("data-collection"));
-        h.classList.toggle("is-active", hc === ci);
-      });
-
-      if (activeLabel) {
-        activeLabel.textContent = collectionsData[ci].name;
+    cells.forEach((cell, i) => {
+      const raw = cell.getAttribute("data-photos") ?? "[]";
+      let photos = [];
+      try {
+        photos = JSON.parse(raw);
+      } catch {
+        photos = [];
       }
 
-      currentCollection = ci;
-      currentPhoto = pi;
-    }
+      const img = cell.querySelector(".cell-img");
+      if (img && photos.length > 1) {
+        let index = 0;
+        const startDelay =
+          CYCLE_STAGGER_MS * Math.random() +
+          i * CYCLE_VARIANCE_MS * Math.random();
+        const swapDelay = Math.round(FADE_DURATION_MS / 2);
 
-    headers.forEach((header) => {
-      header.addEventListener("click", () => {
-        const ci = Number(header.getAttribute("data-collection"));
-        if (ci !== currentCollection) {
-          showPhoto(ci, 0);
-        }
+        timeouts.push(
+          setTimeout(() => {
+            const timer = setInterval(() => {
+              if (paused) return;
+              index = (index + 1) % photos.length;
+              const next = photos[index];
+              img.classList.add("is-fading");
+              setTimeout(() => {
+                img.src = next;
+                img.classList.remove("is-fading");
+              }, swapDelay);
+            }, CYCLE_INTERVAL_MS);
+            timers.push(timer);
+          }, startDelay),
+        );
+      }
+
+      cell.addEventListener("mouseenter", () => {
+        if (!panel || !nameEl || !dateEl) return;
+        const name = cell.getAttribute("data-name") ?? "";
+        const date = cell.getAttribute("data-date") ?? "";
+        nameEl.textContent = name;
+        dateEl.textContent = formatDate(date);
+        panel.classList.add("is-visible");
+      });
+
+      cell.addEventListener("mouseleave", () => {
+        if (!panel) return;
+        panel.classList.remove("is-visible");
+      });
+
+      cell.addEventListener("focus", () => {
+        if (!panel || !nameEl || !dateEl) return;
+        const name = cell.getAttribute("data-name") ?? "";
+        const date = cell.getAttribute("data-date") ?? "";
+        nameEl.textContent = name;
+        dateEl.textContent = formatDate(date);
+        panel.classList.add("is-visible");
+      });
+
+      cell.addEventListener("blur", () => {
+        if (!panel) return;
+        panel.classList.remove("is-visible");
       });
     });
 
-    const prev = document.getElementById("nav-prev");
-    const next = document.getElementById("nav-next");
-
-    if (prev) {
-      prev.addEventListener("click", () => {
-        const total = collectionsData[currentCollection].photos.length;
-        showPhoto(currentCollection, (currentPhoto - 1 + total) % total);
-      });
-    }
-
-    if (next) {
-      next.addEventListener("click", () => {
-        const total = collectionsData[currentCollection].photos.length;
-        showPhoto(currentCollection, (currentPhoto + 1) % total);
-      });
-    }
-
-    function handleKeyDown(e) {
-      const total = collectionsData[currentCollection].photos.length;
-      if (e.key === "ArrowLeft")
-        showPhoto(currentCollection, (currentPhoto - 1 + total) % total);
-      if (e.key === "ArrowRight")
-        showPhoto(currentCollection, (currentPhoto + 1) % total);
-    }
-
-    document.removeEventListener("keydown", handleKeyDown);
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("astro:before-swap", clearAll, { once: true });
   }
 
-  document.addEventListener("astro:page-load", setupPhotoViewer);
+  document.addEventListener("astro:page-load", setupPhotoGrid);
 </script>

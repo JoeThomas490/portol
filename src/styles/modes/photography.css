@@ -1,9 +1,8 @@
 [data-mode="photography"] {
-  --color-bg: #ffffff;
-  --color-text: #1a1a1a;
-  --color-accent:rgb(255, 98, 0);
-  --color-muted: #f5f5f5;
-  --color-border: #e5e5e5;
-  --color-invert: #000000;
+  --color-bg: #0d0d0d;
+  --color-text: #e8e8e8;
+  --color-accent: rgb(255, 98, 0);
+  --color-muted: #1a1a1a;
+  --color-border: #2a2a2a;
+  --color-invert: #ffffff;
 }
-
