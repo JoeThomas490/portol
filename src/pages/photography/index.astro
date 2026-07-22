@@ -10,7 +10,7 @@ import {
 const CYCLE_INTERVAL_MS = 4500;
 const CYCLE_STAGGER_MS = 600;
 const CYCLE_VARIANCE_MS = 750;
-const FADE_DURATION_MS = 400;
+const FADE_DURATION_MS = 100;
 
 const realCollections = await getPhotoCollections();
 const collections = getGridCollections(realCollections);
@@ -129,7 +129,7 @@ const cells = GRID_PLACEMENTS.map((placement, i) => {
   }
 
   .cell-img.is-fading {
-    opacity: 0;
+    opacity: 100;
   }
 
   .cell-placeholder {
