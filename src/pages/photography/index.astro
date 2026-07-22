@@ -237,7 +237,7 @@ const cells = GRID_PLACEMENTS.map((placement, i) => {
         ? grid.querySelector(".grid-cell:hover") !== null
         : false;
       // Cap dt so a background tab / long frame can't fast-forward everything.
-      const dt = isPaused ? 0 : Math.min(rawDt, 100);
+      const dt = Math.min(rawDt, 100);
       lastTick = now;
 
       for (const s of cellState) {
@@ -255,7 +255,7 @@ const cells = GRID_PLACEMENTS.map((placement, i) => {
           continue;
         }
 
-        s.timeUntilFade -= dt;
+        s.timeUntilFade -= isPaused ? 0 : dt;
         if (s.timeUntilFade <= 0) {
           s.index = (s.index + 1) % s.photos.length;
           s.pendingSrc = s.photos[s.index];
