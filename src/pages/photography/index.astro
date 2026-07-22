@@ -20,6 +20,7 @@ const cells = GRID_PLACEMENTS.map((placement, i) => {
   return {
     id: `cell-${i}`,
     placement,
+    slug: collection?.slug,
     name: collection?.name ?? "",
     date: collection?.date ? collection.date.toISOString().slice(0, 10) : "",
     photos: collection?.photos.map((p) => p.src) ?? [],
@@ -35,31 +36,56 @@ const cells = GRID_PLACEMENTS.map((placement, i) => {
       style={`--grid-cols: ${GRID_COLUMNS}; --cell-fade-ms: ${FADE_DURATION_MS}ms;`}
     >
       {
-        cells.map((cell) => (
-          <a
-            id={cell.id}
-            href="/photography/slideshow"
-            class="grid-cell"
-            style={`grid-column: ${cell.placement.col}; grid-row: ${cell.placement.row};`}
-            data-cell-id={cell.id}
-            data-name={cell.name}
-            data-date={cell.date}
-            data-photos={JSON.stringify(cell.photos)}
-            aria-label={cell.name}
-          >
-            {cell.photos.length > 0 ? (
-              <img
-                src={cell.photos[0]}
-                alt={cell.alt}
-                loading="lazy"
-                decoding="async"
-                class="cell-img"
-              />
-            ) : (
-              <div class="cell-placeholder" aria-hidden="true" />
-            )}
-          </a>
-        ))
+        cells.map((cell) =>
+          cell.slug ? (
+            <a
+              id={cell.id}
+              href={`/photography/${cell.slug}`}
+              class="grid-cell"
+              style={`grid-column: ${cell.placement.col}; grid-row: ${cell.placement.row};`}
+              data-cell-id={cell.id}
+              data-name={cell.name}
+              data-date={cell.date}
+              data-photos={JSON.stringify(cell.photos)}
+              aria-label={cell.name}
+            >
+              {cell.photos.length > 0 ? (
+                <img
+                  src={cell.photos[0]}
+                  alt={cell.alt}
+                  loading="lazy"
+                  decoding="async"
+                  class="cell-img"
+                />
+              ) : (
+                <div class="cell-placeholder" aria-hidden="true" />
+              )}
+            </a>
+          ) : (
+            <div
+              id={cell.id}
+              class="grid-cell"
+              style={`grid-column: ${cell.placement.col}; grid-row: ${cell.placement.row};`}
+              data-cell-id={cell.id}
+              data-name={cell.name}
+              data-date={cell.date}
+              data-photos={JSON.stringify(cell.photos)}
+              aria-label={cell.name}
+            >
+              {cell.photos.length > 0 ? (
+                <img
+                  src={cell.photos[0]}
+                  alt={cell.alt}
+                  loading="lazy"
+                  decoding="async"
+                  class="cell-img"
+                />
+              ) : (
+                <div class="cell-placeholder" aria-hidden="true" />
+              )}
+            </div>
+          ),
+        )
       }
     </div>
   </div>
