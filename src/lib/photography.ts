@@ -9,7 +9,6 @@ export type PhotoCollection = {
   photos: {
     src: string;
     alt: string;
-    title: string;
   }[];
 };
 
@@ -28,7 +27,6 @@ export async function getPhotoCollections(): Promise<PhotoCollection[]> {
         photos: images.map((image) => ({
           src: image.src,
           alt: entry.data.alt ?? image.alt,
-          title: entry.data.title || image.alt,
         })),
       };
     }),

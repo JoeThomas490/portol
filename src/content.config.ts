@@ -36,7 +36,6 @@ const programmingExperience = defineCollection({
 const photography = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/photography' }),
   schema: z.object({
-    title: z.string().default(''),
     collection: z.string(),
     prefix: z.string(),
     alt: z.string().optional(),
