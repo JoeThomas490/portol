@@ -2,12 +2,17 @@
 import { ClientRouter, fade } from "astro:transitions";
 
 import Favicons from "../components/Favicons.astro";
-import ArrowLeft from "@lucide/astro/icons/arrow-left";
 
 interface Props {
   title: string;
   description?: string;
   mode?: "photography" | "programming" | "base" | "about";
+}
+
+interface Breadcrumb {
+  label: string;
+  href: string;
+  isActive: boolean;
 }
 
 const navLinks = [
@@ -19,6 +24,28 @@ const navLinks = [
 const { title, description = "joenoseph", mode = "base" } = Astro.props;
 
 const isLanding = Astro.url.pathname === "/";
+
+function buildBreadcrumbs(pathname: string): Breadcrumb[] {
+  const segments = pathname.split("/").filter(Boolean);
+  const crumbs: Breadcrumb[] = [
+    { label: "joenoseph", href: "/", isActive: segments.length === 0 },
+  ];
+
+  let path = "";
+  for (let i = 0; i < segments.length; i++) {
+    path += `/${segments[i]}`;
+    const isLast = i === segments.length - 1;
+    crumbs.push({
+      label: segments[i],
+      href: path,
+      isActive: isLast,
+    });
+  }
+
+  return crumbs;
+}
+
+const breadcrumbs = buildBreadcrumbs(Astro.url.pathname);
 
 const customFade = {
   forwards: fade({ duration: "0.4s" }).forwards,
@@ -56,46 +83,41 @@ const customFade = {
     >
       <div class="flex items-start justify-between">
         <div class="flex flex-col items-start gap-0 text-(--color-text)">
-          {
-            !isLanding ? (
-              <a
-                href="#"
-                id="back-link"
-                class:list={[
-                  "flex items-center gap-2 no-underline transition-colors duration-300",
-                  mode === "base" ? "text-neutral-400 hover:text-white" : "",
-                ]}
-                style={
-                  mode !== "base" ? "color: var(--color-text);" : undefined
-                }
-              >
-                <ArrowLeft size={18} />
-                <span
-                  class="text-lg font-bold tracking-tight"
+          <div
+            id="site-logo"
+            aria-label="Breadcrumb"
+            class="flex flex-wrap items-center gap-x-1.5"
+            role="navigation"
+          >
+            {
+              breadcrumbs.map((crumb) => (
+                <a
+                  href={crumb.href}
+                  class:list={[
+                    "text-lg font-bold tracking-tight no-underline transition-colors duration-300",
+                    crumb.isActive
+                      ? "text-(--color-accent)"
+                      : mode === "base"
+                        ? "text-neutral-400 hover:text-white"
+                        : "hover:opacity-80",
+                  ]}
                   style={
-                    mode !== "base"
+                    !crumb.isActive && mode !== "base"
                       ? "color: var(--color-text);"
-                      : "color: white;"
+                      : undefined
                   }
+                  aria-current={crumb.isActive ? "page" : undefined}
                 >
-                  joenoseph
-                </span>
-                <span class="text-lg font-bold text-(--color-accent) -ml-1">
-                  {mode}
-                </span>
-                <span class="text-lg font-bold text-(--color-accent) -ml-1">
-                  *
-                </span>
-              </a>
-            ) : (
-              <div id="site-logo" class="flex items-center gap-0 ml-2">
-                <a href="/" class="text-lg font-bold tracking-tight text-white">
-                  joenoseph
+                  {crumb.label}
+                  {crumb.isActive && (
+                    <span class="ml-0.5" aria-hidden="true">
+                      *
+                    </span>
+                  )}
                 </a>
-                <span class="text-lg text-white ml-1">*</span>
-              </div>
-            )
-          }
+              ))
+            }
+          </div>
           <!-- {
             mode !== "base" && (
               <span
@@ -145,16 +167,6 @@ const customFade = {
     </main>
   </body>
 </html>
-
-<script>
-  document.addEventListener("astro:page-load", () => {
-    const backLink = document.getElementById("back-link");
-    backLink?.addEventListener("click", (e) => {
-      e.preventDefault();
-      history.back();
-    });
-  });
-</script>
 
 <style is:global>
   @import "../styles/global.css";
