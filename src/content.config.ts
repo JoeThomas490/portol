@@ -41,6 +41,7 @@ const photography = defineCollection({
     prefix: z.string(),
     alt: z.string().optional(),
     date: z.coerce.date().optional(),
+    featured: z.boolean().default(false),
   }),
 });
 
