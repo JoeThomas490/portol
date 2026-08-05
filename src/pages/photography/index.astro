@@ -5,7 +5,7 @@ import { GRID_COLUMNS } from "../../lib/photographyGrid";
 
 const CYCLE_INTERVAL_MS = 4500;
 const CYCLE_STAGGER_MS = 600;
-const CYCLE_VARIANCE_MS = 750;
+const CYCLE_VARIANCE_MS = 1000;
 const FADE_DURATION_MS = 400;
 
 const collections = await getPhotoCollections();
@@ -166,14 +166,16 @@ const collections = await getPhotoCollections();
     FADE_DURATION_MS,
   }}
 >
+  let stopPhotoGrid = null;
+
   function setupPhotoGrid() {
+    if (stopPhotoGrid) stopPhotoGrid();
+
     const grid = document.querySelector(".photo-grid");
     const cells = Array.from(document.querySelectorAll(".grid-cell"));
     const panel = document.getElementById("hover-panel");
     const nameEl = document.getElementById("hover-name");
     const dateEl = document.getElementById("hover-date");
-
-    const swapDelay = FADE_DURATION_MS / 2;
 
     const cellState = cells
       .map((cell, i) => {
@@ -190,15 +192,15 @@ const collections = await getPhotoCollections();
 
         const startDelay =
           CYCLE_STAGGER_MS * Math.random() +
-          i * CYCLE_VARIANCE_MS * Math.random();
+          CYCLE_VARIANCE_MS * 2 * Math.random();
 
         return {
           img,
           photos,
           index: 0,
+          phase: "waiting",
           timeUntilFade: CYCLE_INTERVAL_MS + startDelay,
           fadeRemaining: 0,
-          pendingSrc: null,
         };
       })
       .filter((s) => s !== null);
@@ -216,30 +218,39 @@ const collections = await getPhotoCollections();
         ? grid.querySelector(".grid-cell:hover") !== null
         : false;
       // Cap dt so a background tab / long frame can't fast-forward everything.
-      const dt = Math.min(rawDt, 100);
+      const dt = isPaused ? 0 : Math.min(rawDt, 500);
       lastTick = now;
 
       for (const s of cellState) {
-        if (s.fadeRemaining > 0) {
+        if (s.phase === "fade-out") {
           s.fadeRemaining -= dt;
           if (s.fadeRemaining <= 0) {
-            if (s.pendingSrc !== null) {
-              s.img.src = s.pendingSrc;
-              s.pendingSrc = null;
-            }
+            s.img.src = s.photos[s.index];
             s.img.classList.remove("is-fading");
-            s.fadeRemaining = 0;
-            s.timeUntilFade = CYCLE_INTERVAL_MS;
+            s.phase = "fade-in";
+            s.fadeRemaining = FADE_DURATION_MS;
           }
           continue;
         }
 
-        s.timeUntilFade -= isPaused ? 0 : dt;
+        if (s.phase === "fade-in") {
+          s.fadeRemaining -= dt;
+          if (s.fadeRemaining <= 0) {
+            s.phase = "waiting";
+            s.fadeRemaining = 0;
+            s.timeUntilFade =
+              CYCLE_INTERVAL_MS + CYCLE_VARIANCE_MS * Math.random();
+          }
+          continue;
+        }
+
+        s.timeUntilFade -= dt;
         if (s.timeUntilFade <= 0) {
           s.index = (s.index + 1) % s.photos.length;
-          s.pendingSrc = s.photos[s.index];
           s.img.classList.add("is-fading");
-          s.fadeRemaining = swapDelay;
+          s.phase = "fade-out";
+          s.fadeRemaining = FADE_DURATION_MS;
+          s.timeUntilFade = 0;
         }
       }
 
@@ -289,8 +300,10 @@ const collections = await getPhotoCollections();
     function stop() {
       stopped = true;
       if (rafId !== 0) cancelAnimationFrame(rafId);
+      if (stopPhotoGrid === stop) stopPhotoGrid = null;
     }
 
+    stopPhotoGrid = stop;
     document.addEventListener("astro:before-swap", stop, { once: true });
 
     if (cellState.length > 0) {
