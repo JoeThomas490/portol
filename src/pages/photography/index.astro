@@ -3,9 +3,8 @@ import PhotographyLayout from "../../layouts/PhotographyLayout.astro";
 import { getPhotoCollections } from "../../lib/photography";
 import { GRID_COLUMNS } from "../../lib/photographyGrid";
 
-const CYCLE_INTERVAL_MS = 4500;
-const CYCLE_STAGGER_MS = 600;
-const CYCLE_VARIANCE_MS = 1000;
+const CYCLE_MIN_MS = 2000;
+const CYCLE_VARIANCE_MS = 5500;
 const FADE_DURATION_MS = 400;
 
 const collections = await getPhotoCollections();
@@ -13,7 +12,10 @@ const collections = await getPhotoCollections();
 
 <PhotographyLayout>
   <div class="grid-scroll flex-1 min-w-0 h-full overflow-auto">
-    <div class="photo-grid grid-cols-1 md:grid-cols-6">
+    <div
+      class="photo-grid grid-cols-1 md:grid-cols-6"
+      style={`--cell-fade-ms: ${FADE_DURATION_MS}ms`}
+    >
       {
         collections.map((collection, i) => (
           <a
@@ -111,7 +113,7 @@ const collections = await getPhotoCollections();
     display: block;
     margin-top: auto;
     margin-right: auto;
-    transition: opacity 400ms ease;
+    transition: opacity var(--cell-fade-ms, 400ms) ease;
   }
 
   .cell-img.is-fading {
@@ -162,13 +164,17 @@ const collections = await getPhotoCollections();
 
 <script
   define:vars={{
-    CYCLE_INTERVAL_MS,
-    CYCLE_STAGGER_MS,
+    CYCLE_MIN_MS,
     CYCLE_VARIANCE_MS,
     FADE_DURATION_MS,
   }}
 >
   let stopPhotoGrid = null;
+
+  function randomIdleMs() {
+    const r = Math.random();
+    return CYCLE_MIN_MS + r * r * CYCLE_VARIANCE_MS;
+  }
 
   function setupPhotoGrid() {
     if (stopPhotoGrid) stopPhotoGrid();
@@ -192,17 +198,20 @@ const collections = await getPhotoCollections();
         const img = cell.querySelector(".cell-img");
         if (!img || photos.length <= 1) return null;
 
-        const startDelay =
-          CYCLE_STAGGER_MS * Math.random() +
-          CYCLE_VARIANCE_MS * 2 * Math.random();
+        const startDelay = Math.random() * (CYCLE_MIN_MS + CYCLE_VARIANCE_MS);
+
+        for (let p = 1; p < photos.length; p++) {
+          const preload = new Image();
+          preload.src = photos[p];
+        }
 
         return {
           img,
           photos,
           index: 0,
           phase: "waiting",
-          timeUntilFade: CYCLE_INTERVAL_MS + startDelay,
-          fadeRemaining: 0,
+          timeUntilFade: startDelay,
+          phaseEndsAt: 0,
         };
       })
       .filter((s) => s !== null);
@@ -219,30 +228,34 @@ const collections = await getPhotoCollections();
       const isPaused = grid
         ? grid.querySelector(".grid-cell:hover") !== null
         : false;
-      // Cap dt so a background tab / long frame can't fast-forward everything.
-      const dt = isPaused ? 0 : Math.min(rawDt, 500);
       lastTick = now;
+
+      if (isPaused) {
+        for (const s of cellState) {
+          if (s.phase === "fade-out" || s.phase === "fade-in") {
+            s.phaseEndsAt += rawDt;
+          }
+        }
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
+
+      const dt = Math.min(rawDt, 500);
 
       for (const s of cellState) {
         if (s.phase === "fade-out") {
-          s.fadeRemaining -= dt;
-          if (s.fadeRemaining <= 0) {
-            s.img.src = s.photos[s.index];
-            s.img.classList.remove("is-fading");
-            s.phase = "fade-in";
-            s.fadeRemaining = FADE_DURATION_MS;
-          }
+          if (now < s.phaseEndsAt) continue;
+          s.img.src = s.photos[s.index];
+          s.img.classList.remove("is-fading");
+          s.phase = "fade-in";
+          s.phaseEndsAt = now + FADE_DURATION_MS;
           continue;
         }
 
         if (s.phase === "fade-in") {
-          s.fadeRemaining -= dt;
-          if (s.fadeRemaining <= 0) {
-            s.phase = "waiting";
-            s.fadeRemaining = 0;
-            s.timeUntilFade =
-              CYCLE_INTERVAL_MS + CYCLE_VARIANCE_MS * Math.random();
-          }
+          if (now < s.phaseEndsAt) continue;
+          s.phase = "waiting";
+          s.timeUntilFade = randomIdleMs();
           continue;
         }
 
@@ -251,7 +264,7 @@ const collections = await getPhotoCollections();
           s.index = (s.index + 1) % s.photos.length;
           s.img.classList.add("is-fading");
           s.phase = "fade-out";
-          s.fadeRemaining = FADE_DURATION_MS;
+          s.phaseEndsAt = now + FADE_DURATION_MS;
           s.timeUntilFade = 0;
         }
       }
