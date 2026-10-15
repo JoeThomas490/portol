@@ -11,7 +11,12 @@ import {
   R2_PUBLIC_URL,
   R2_SECRET_ACCESS_KEY,
 } from "astro:env/server";
-import { compareFilenames, isImageKey, normalizePrefix } from "./photo-keys";
+import {
+  compareFilenames,
+  isImageKey,
+  normalizePrefix,
+  publicUrlFor,
+} from "./photo-keys";
 
 function getR2Config() {
   const accountId = R2_ACCOUNT_ID ?? CLOUDFLARE_ACCOUNT_ID;
@@ -59,6 +64,7 @@ function filenameToAlt(filename: string): string {
 }
 
 export type R2Image = {
+  key: string;
   src: string;
   alt: string;
   filename: string;
@@ -90,7 +96,8 @@ export async function listR2Images(prefix: string): Promise<R2Image[]> {
 
       const filename = object.Key.split("/").pop()!;
       images.push({
-        src: `${publicUrl.replace(/\/+$/, "")}/${object.Key}`,
+        key: object.Key,
+        src: publicUrlFor(publicUrl, object.Key),
         alt: filenameToAlt(filename),
         filename,
       });

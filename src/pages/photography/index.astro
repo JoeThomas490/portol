@@ -32,8 +32,8 @@ const collections = await getPhotoCollections();
             aria-label={collection.name}
           >
             <img
-              src={collection.photos[0].src}
-              alt={collection.photos[0]?.alt ?? collection.name}
+              src={collection.tile.src}
+              alt={collection.tile.alt || collection.name}
               loading="eager"
               fetchpriority="high"
               decoding="async"

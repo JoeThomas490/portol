@@ -1,4 +1,11 @@
-import { compareFilenames, filenameOf, isImageKey } from "../../lib/photo-keys";
+import {
+  compareFilenames,
+  filenameOf,
+  isImageKey,
+  THUMBNAIL_LONG_EDGE,
+  thumbnailKeyFor,
+  tilePhotoOf,
+} from "../../lib/photo-keys";
 
 export type Original = { key: string; etag: string };
 
@@ -23,22 +30,17 @@ export interface Resizer {
   toWebp(input: Uint8Array, longEdge: number): Promise<Uint8Array>;
 }
 
-const LONG_EDGE = 480;
 const SOURCE_ETAG = "source-etag";
 const CACHE_CONTROL = "public, max-age=86400";
-
-export function thumbnailKeyFor(originalKey: string): string {
-  return `thumbs/${LONG_EDGE}/${originalKey.replace(/\.[^./]+$/, "")}.webp`;
-}
 
 export type Album = { prefix: string; photos: Original[] };
 
 /**
  * Decides which Photos get Thumbnails: currently each Album Tile's
- * Photo, the first Photo by filename. Widen this to give more Photos one.
+ * Photo. Widen this to give more Photos one.
  */
 export function selectPhotosForThumbnails(albums: Album[]): Original[] {
-  return albums.flatMap((album) => album.photos.slice(0, 1));
+  return albums.flatMap((album) => tilePhotoOf(album.photos) ?? []);
 }
 
 async function listAlbum(
@@ -76,7 +78,7 @@ export async function createThumbnails({
 
     const body = await resizer.toWebp(
       await storage.readOriginal(original.key),
-      LONG_EDGE,
+      THUMBNAIL_LONG_EDGE,
     );
     await storage.uploadThumbnail({
       key,

@@ -1,4 +1,6 @@
 import { getCollection } from "astro:content";
+import { R2_PUBLIC_URL } from "astro:env/server";
+import { albumTile, type AlbumTile } from "./album-tile";
 import { listR2Images } from "./r2";
 
 export type PhotoCollection = {
@@ -6,7 +8,10 @@ export type PhotoCollection = {
   name: string;
   date?: Date;
   featured: boolean;
+  /** The Thumbnail shown on this Album's Tile in the grid. */
+  tile: AlbumTile;
   photos: {
+    key: string;
     src: string;
     alt: string;
   }[];
@@ -25,6 +30,7 @@ export async function getPhotoCollections(): Promise<PhotoCollection[]> {
         date: entry.data.date,
         featured: entry.data.featured,
         photos: images.map((image) => ({
+          key: image.key,
           src: image.src,
           alt: entry.data.alt ?? image.alt,
         })),
@@ -33,7 +39,10 @@ export async function getPhotoCollections(): Promise<PhotoCollection[]> {
   );
 
   return collections
-    .filter((collection) => collection.photos.length > 0)
+    .flatMap((collection) => {
+      const tile = albumTile(collection.photos, R2_PUBLIC_URL);
+      return tile ? [{ ...collection, tile }] : [];
+    })
     .sort((a, b) => {
       if (!a.date && !b.date) return 0;
       if (!a.date) return -1;

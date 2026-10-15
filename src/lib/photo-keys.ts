@@ -29,3 +29,22 @@ export function compareFilenames(a: string, b: string): number {
     sensitivity: "base",
   });
 }
+
+export const THUMBNAIL_LONG_EDGE = 480;
+
+/** Where a Photo's Thumbnail lives in R2: thumbs/480/<path>.webp. */
+export function thumbnailKeyFor(originalKey: string): string {
+  return `thumbs/${THUMBNAIL_LONG_EDGE}/${originalKey.replace(/\.[^./]+$/, "")}.webp`;
+}
+
+export function publicUrlFor(baseUrl: string, key: string): string {
+  return `${baseUrl.replace(/\/+$/, "")}/${key}`;
+}
+
+/**
+ * An Album Tile's Photo: the first by filename. Both the build step and the
+ * grid choose it here, so the grid always shows a Thumbnail that was built.
+ */
+export function tilePhotoOf<T>(photosInFilenameOrder: T[]): T | undefined {
+  return photosInFilenameOrder[0];
+}
