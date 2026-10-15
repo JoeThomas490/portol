@@ -32,6 +32,7 @@ const isInInitialWindow = (pi: number) =>
   <!-- Photo viewer -->
   <div
     id="photo-viewer"
+    data-total-photos={photos.length}
     class="w-full min-w-0 flex-1 h-full relative flex items-center justify-center overflow-hidden"
   >
     {
@@ -93,22 +94,30 @@ const isInInitialWindow = (pi: number) =>
   </div>
 </PhotographyLayout>
 
-<script define:vars={{ totalPhotos: photos.length }}>
+<script>
+  // A bundled script runs once per session, so set up on every page load and
+  // read this Album's state from the page rather than baking it into the script.
   function setupCollectionViewer() {
-    if (totalPhotos === 0) return;
+    const viewer = document.getElementById("photo-viewer");
+    if (!viewer) return;
+
+    const totalPhotos = Number(viewer.dataset.totalPhotos);
+    if (!totalPhotos) return;
 
     let currentPhoto = 0;
     const slides = document.querySelectorAll(".photo-slide");
 
-    function loadPhoto(pi) {
-      const img = document.querySelector(`.photo-slide[data-photo="${pi}"] img`);
+    function loadPhoto(pi: number) {
+      const img = document.querySelector<HTMLImageElement>(
+        `.photo-slide[data-photo="${pi}"] img`,
+      );
       const src = img?.getAttribute("data-src");
-      if (!src) return;
+      if (!img || !src) return;
       img.src = src;
       img.removeAttribute("data-src");
     }
 
-    function showPhoto(pi) {
+    function showPhoto(pi: number) {
       loadPhoto((pi - 1 + totalPhotos) % totalPhotos);
       loadPhoto(pi);
       loadPhoto((pi + 1) % totalPhotos);
@@ -125,30 +134,23 @@ const isInInitialWindow = (pi: number) =>
       currentPhoto = pi;
     }
 
-    const prev = document.getElementById("nav-prev");
-    const next = document.getElementById("nav-next");
+    document.getElementById("nav-prev")?.addEventListener("click", () => {
+      showPhoto((currentPhoto - 1 + totalPhotos) % totalPhotos);
+    });
 
-    if (prev) {
-      prev.addEventListener("click", () => {
-        showPhoto((currentPhoto - 1 + totalPhotos) % totalPhotos);
-      });
-    }
+    document.getElementById("nav-next")?.addEventListener("click", () => {
+      showPhoto((currentPhoto + 1) % totalPhotos);
+    });
 
-    if (next) {
-      next.addEventListener("click", () => {
-        showPhoto((currentPhoto + 1) % totalPhotos);
-      });
-    }
-
-    function handleKeyDown(e) {
+    function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "ArrowLeft")
         showPhoto((currentPhoto - 1 + totalPhotos) % totalPhotos);
       if (e.key === "ArrowRight") showPhoto((currentPhoto + 1) % totalPhotos);
     }
 
-    // This inline script re-runs on every client-side navigation, so drop the
-    // listener before the next page swaps in. A leftover one would load
-    // Photos on the next Album page using this Album's state.
+    // The document outlives client-side navigation, so drop the listener
+    // before the next page swaps in. A leftover one would load Photos on the
+    // next Album page using this Album's state.
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener(
       "astro:before-swap",
@@ -157,7 +159,5 @@ const isInInitialWindow = (pi: number) =>
     );
   }
 
-  document.addEventListener("astro:page-load", setupCollectionViewer, {
-    once: true,
-  });
+  document.addEventListener("astro:page-load", setupCollectionViewer);
 </script>
