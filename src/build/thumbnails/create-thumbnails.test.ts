@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
-  createResizedCopies,
-  type CopyUpload,
+  createThumbnails,
+  type ThumbnailUpload,
   type PhotoStorage,
   type Resizer,
-} from "./resized-copies";
+} from "./create-thumbnails";
 
 type StoredObject = {
   body: Uint8Array;
@@ -41,18 +41,18 @@ class FakeBucket implements PhotoStorage {
     return object.body;
   }
 
-  async readCopyMetadata(key: string) {
+  async readThumbnailMetadata(key: string) {
     return this.objects.get(key)?.metadata ?? null;
   }
 
-  async uploadCopy(copy: CopyUpload) {
+  async uploadThumbnail(thumbnail: ThumbnailUpload) {
     this.uploads++;
-    this.objects.set(copy.key, {
-      body: copy.body,
+    this.objects.set(thumbnail.key, {
+      body: thumbnail.body,
       etag: `etag-${this.nextEtag++}`,
-      metadata: copy.metadata,
-      cacheControl: copy.cacheControl,
-      contentType: copy.contentType,
+      metadata: thumbnail.metadata,
+      cacheControl: thumbnail.cacheControl,
+      contentType: thumbnail.contentType,
     });
   }
 
@@ -70,12 +70,12 @@ const stubResizer: Resizer = {
   },
 };
 
-describe("createResizedCopies", () => {
-  it("gives an Album Tile's Photo without a copy a 480px WebP copy at the mirrored path", async () => {
+describe("createThumbnails", () => {
+  it("gives an Album Tile's Photo without a Thumbnail a 480px WebP one at the mirrored path", async () => {
     const bucket = new FakeBucket();
     bucket.putOriginal("photography/tessa/01.jpg", "tessa-01");
 
-    await createResizedCopies({
+    await createThumbnails({
       storage: bucket,
       resizer: stubResizer,
       albumPrefixes: ["photography/tessa"],
@@ -86,20 +86,20 @@ describe("createResizedCopies", () => {
     );
   });
 
-  it("stores the original's ETag on the copy and caches it for a day", async () => {
+  it("stores the original's ETag on the Thumbnail and caches it for a day", async () => {
     const bucket = new FakeBucket();
     const etag = bucket.putOriginal("photography/tessa/01.jpg", "tessa-01");
 
-    await createResizedCopies({
+    await createThumbnails({
       storage: bucket,
       resizer: stubResizer,
       albumPrefixes: ["photography/tessa"],
     });
 
-    const copy = bucket.objects.get("thumbs/480/photography/tessa/01.webp");
-    expect(copy?.metadata).toEqual({ "source-etag": etag });
-    expect(copy?.cacheControl).toBe("public, max-age=86400");
-    expect(copy?.contentType).toBe("image/webp");
+    const thumbnail = bucket.objects.get("thumbs/480/photography/tessa/01.webp");
+    expect(thumbnail?.metadata).toEqual({ "source-etag": etag });
+    expect(thumbnail?.cacheControl).toBe("public, max-age=86400");
+    expect(thumbnail?.contentType).toBe("image/webp");
   });
 
   it("uploads nothing on a second run in a row", async () => {
@@ -107,7 +107,7 @@ describe("createResizedCopies", () => {
     bucket.putOriginal("photography/tessa/01.jpg", "tessa-01");
     bucket.putOriginal("photography/wales/01.jpg", "wales-01");
     const run = () =>
-      createResizedCopies({
+      createThumbnails({
         storage: bucket,
         resizer: stubResizer,
         albumPrefixes: ["photography/tessa", "photography/wales"],
@@ -121,11 +121,11 @@ describe("createResizedCopies", () => {
     expect(bucket.uploads).toBe(2);
   });
 
-  it("regenerates a copy when its original was replaced under the same name", async () => {
+  it("regenerates a Thumbnail when its original was replaced under the same name", async () => {
     const bucket = new FakeBucket();
     bucket.putOriginal("photography/tessa/01.jpg", "old tessa");
     const run = () =>
-      createResizedCopies({
+      createThumbnails({
         storage: bucket,
         resizer: stubResizer,
         albumPrefixes: ["photography/tessa"],
@@ -135,9 +135,9 @@ describe("createResizedCopies", () => {
     const newEtag = bucket.putOriginal("photography/tessa/01.jpg", "new tessa");
     await run();
 
-    const copyKey = "thumbs/480/photography/tessa/01.webp";
-    expect(bucket.text(copyKey)).toBe("webp@480:new tessa");
-    expect(bucket.objects.get(copyKey)?.metadata).toEqual({
+    const thumbnailKey = "thumbs/480/photography/tessa/01.webp";
+    expect(bucket.text(thumbnailKey)).toBe("webp@480:new tessa");
+    expect(bucket.objects.get(thumbnailKey)?.metadata).toEqual({
       "source-etag": newEtag,
     });
   });
@@ -152,7 +152,7 @@ describe("createResizedCopies", () => {
     };
 
     await expect(
-      createResizedCopies({
+      createThumbnails({
         storage: bucket,
         resizer: brokenResizer,
         albumPrefixes: ["photography/tessa"],
@@ -164,12 +164,12 @@ describe("createResizedCopies", () => {
   it("fails when an upload fails", async () => {
     const bucket = new FakeBucket();
     bucket.putOriginal("photography/tessa/01.jpg", "tessa-01");
-    bucket.uploadCopy = async () => {
+    bucket.uploadThumbnail = async () => {
       throw new Error("403 Forbidden");
     };
 
     await expect(
-      createResizedCopies({
+      createThumbnails({
         storage: bucket,
         resizer: stubResizer,
         albumPrefixes: ["photography/tessa"],
@@ -181,7 +181,7 @@ describe("createResizedCopies", () => {
     const bucket = new FakeBucket();
     bucket.putOriginal("photography/tessa/01.jpg", "tessa-01");
 
-    await createResizedCopies({
+    await createThumbnails({
       storage: bucket,
       resizer: stubResizer,
       albumPrefixes: [],
@@ -192,7 +192,7 @@ describe("createResizedCopies", () => {
 
   it("does nothing without R2 credentials", async () => {
     await expect(
-      createResizedCopies({
+      createThumbnails({
         storage: null,
         resizer: stubResizer,
         albumPrefixes: ["photography/tessa"],
@@ -200,7 +200,7 @@ describe("createResizedCopies", () => {
     ).resolves.toEqual([]);
   });
 
-  it("copies only each Album Tile's Photo, the first by filename", async () => {
+  it("gives a Thumbnail only to each Album Tile's Photo, the first by filename", async () => {
     const bucket = new FakeBucket();
     bucket.putOriginal("photography/tessa/10.jpg", "tessa-10");
     bucket.putOriginal("photography/tessa/2.jpg", "tessa-2");
@@ -208,16 +208,16 @@ describe("createResizedCopies", () => {
     bucket.putOriginal("photography/wales/b.png", "wales-b");
     bucket.putOriginal("photography/wales/a.png", "wales-a");
 
-    await createResizedCopies({
+    await createThumbnails({
       storage: bucket,
       resizer: stubResizer,
       albumPrefixes: ["photography/tessa", "photography/wales"],
     });
 
-    const copies = [...bucket.objects.keys()].filter((key) =>
+    const thumbnails = [...bucket.objects.keys()].filter((key) =>
       key.startsWith("thumbs/"),
     );
-    expect(copies.sort()).toEqual([
+    expect(thumbnails.sort()).toEqual([
       "thumbs/480/photography/tessa/2.webp",
       "thumbs/480/photography/wales/a.webp",
     ]);

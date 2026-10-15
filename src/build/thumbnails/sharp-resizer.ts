@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import type { Resizer } from "./resized-copies";
+import type { Resizer } from "./create-thumbnails";
 
 export const sharpResizer: Resizer = {
   async toWebp(input, longEdge) {

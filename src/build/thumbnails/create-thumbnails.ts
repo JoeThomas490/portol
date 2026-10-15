@@ -1,8 +1,8 @@
-import { compareFilenames, filenameOf, isImageKey } from "../lib/photo-keys";
+import { compareFilenames, filenameOf, isImageKey } from "../../lib/photo-keys";
 
 export type Original = { key: string; etag: string };
 
-export type CopyUpload = {
+export type ThumbnailUpload = {
   key: string;
   body: Uint8Array;
   metadata: Record<string, string>;
@@ -13,9 +13,9 @@ export type CopyUpload = {
 export interface PhotoStorage {
   listOriginals(prefix: string): Promise<Original[]>;
   readOriginal(key: string): Promise<Uint8Array>;
-  /** Metadata of the copy at `key`, or null if there is no copy. */
-  readCopyMetadata(key: string): Promise<Record<string, string> | null>;
-  uploadCopy(copy: CopyUpload): Promise<void>;
+  /** Metadata of the Thumbnail at `key`, or null if there is none. */
+  readThumbnailMetadata(key: string): Promise<Record<string, string> | null>;
+  uploadThumbnail(thumbnail: ThumbnailUpload): Promise<void>;
 }
 
 export interface Resizer {
@@ -27,17 +27,17 @@ const LONG_EDGE = 480;
 const SOURCE_ETAG = "source-etag";
 const CACHE_CONTROL = "public, max-age=86400";
 
-export function copyKeyFor(originalKey: string): string {
+export function thumbnailKeyFor(originalKey: string): string {
   return `thumbs/${LONG_EDGE}/${originalKey.replace(/\.[^./]+$/, "")}.webp`;
 }
 
 export type Album = { prefix: string; photos: Original[] };
 
 /**
- * Decides which Photos get resized copies: currently each Album Tile's
- * Photo, the first Photo by filename. Widen this to copy more Photos.
+ * Decides which Photos get Thumbnails: currently each Album Tile's
+ * Photo, the first Photo by filename. Widen this to give more Photos one.
  */
-export function selectPhotosToCopy(albums: Album[]): Original[] {
+export function selectPhotosForThumbnails(albums: Album[]): Original[] {
   return albums.flatMap((album) => album.photos.slice(0, 1));
 }
 
@@ -51,8 +51,8 @@ async function listAlbum(
   return { prefix, photos };
 }
 
-/** Uploads missing or stale resized copies; returns the keys uploaded. */
-export async function createResizedCopies({
+/** Uploads missing or stale Thumbnails; returns the keys uploaded. */
+export async function createThumbnails({
   storage,
   resizer,
   albumPrefixes,
@@ -69,16 +69,16 @@ export async function createResizedCopies({
   );
 
   const uploaded: string[] = [];
-  for (const original of selectPhotosToCopy(albums)) {
-    const key = copyKeyFor(original.key);
-    const existing = await storage.readCopyMetadata(key);
+  for (const original of selectPhotosForThumbnails(albums)) {
+    const key = thumbnailKeyFor(original.key);
+    const existing = await storage.readThumbnailMetadata(key);
     if (existing?.[SOURCE_ETAG] === original.etag) continue;
 
     const body = await resizer.toWebp(
       await storage.readOriginal(original.key),
       LONG_EDGE,
     );
-    await storage.uploadCopy({
+    await storage.uploadThumbnail({
       key,
       body,
       metadata: { [SOURCE_ETAG]: original.etag },

@@ -30,7 +30,11 @@ _Avoid_: Image, picture, shot
 
 **Album Tile**:
 An Album's place in the Photography Mode's grid, showing one of its Photos and leading to the Album.
-_Avoid_: Thumbnail, cell, card
+_Avoid_: Cell, card
+
+**Thumbnail**:
+A small, lower-resolution version of a Photo, shown where the full-resolution Photo isn't needed, such as on an Album Tile.
+_Avoid_: Resized copy, derivative, preview
 
 ### Programming
 

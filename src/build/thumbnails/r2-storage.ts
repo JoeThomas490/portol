@@ -7,7 +7,7 @@ import {
   S3ServiceException,
   type ListObjectsV2CommandOutput,
 } from "@aws-sdk/client-s3";
-import type { Original, PhotoStorage } from "./resized-copies";
+import type { Original, PhotoStorage } from "./create-thumbnails";
 
 export type R2Credentials = {
   accountId: string;
@@ -78,7 +78,7 @@ export function createR2Storage(credentials: R2Credentials): PhotoStorage {
       return response.Body.transformToByteArray();
     },
 
-    async readCopyMetadata(key) {
+    async readThumbnailMetadata(key) {
       try {
         const response = await client.send(
           new HeadObjectCommand({ Bucket: bucket, Key: key }),
@@ -95,15 +95,15 @@ export function createR2Storage(credentials: R2Credentials): PhotoStorage {
       }
     },
 
-    async uploadCopy(copy) {
+    async uploadThumbnail(thumbnail) {
       await client.send(
         new PutObjectCommand({
           Bucket: bucket,
-          Key: copy.key,
-          Body: copy.body,
-          Metadata: copy.metadata,
-          CacheControl: copy.cacheControl,
-          ContentType: copy.contentType,
+          Key: thumbnail.key,
+          Body: thumbnail.body,
+          Metadata: thumbnail.metadata,
+          CacheControl: thumbnail.cacheControl,
+          ContentType: thumbnail.contentType,
         }),
       );
     },
