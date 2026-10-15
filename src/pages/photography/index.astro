@@ -2,8 +2,9 @@
 import PhotographyLayout from "../../layouts/PhotographyLayout.astro";
 import { getPhotoCollections } from "../../lib/photography";
 
-const CYCLE_MIN_MS = 2000;
-const CYCLE_VARIANCE_MS = 5500;
+// Photo cycling is disabled while the grid is redesigned.
+// const CYCLE_MIN_MS = 2000;
+// const CYCLE_VARIANCE_MS = 5500;
 const FADE_DURATION_MS = 400;
 
 const collections = await getPhotoCollections();
@@ -26,13 +27,15 @@ const collections = await getPhotoCollections();
             data-date={
               collection.date ? collection.date.toISOString().slice(0, 10) : ""
             }
-            data-photos={JSON.stringify(collection.photos.map((p) => p.src))}
+            {/* Photo cycling is disabled while the grid is redesigned. */}
+            {/* data-photos={JSON.stringify(collection.photos.map((p) => p.src))} */}
             aria-label={collection.name}
           >
             <img
               src={collection.photos[0].src}
               alt={collection.photos[0]?.alt ?? collection.name}
-              loading="lazy"
+              loading="eager"
+              fetchpriority="high"
               decoding="async"
               class="cell-img"
             />
@@ -41,6 +44,14 @@ const collections = await getPhotoCollections();
       }
     </div>
   </div>
+
+  <noscript>
+    <style>
+      .cell-img {
+        opacity: 1 !important;
+      }
+    </style>
+  </noscript>
 
   <div id="hover-panel" class="hover-panel" aria-hidden="true">
     <span id="hover-name" class="hover-name"></span>
@@ -112,12 +123,19 @@ const collections = await getPhotoCollections();
     display: block;
     margin-top: auto;
     margin-right: auto;
+    opacity: 0;
     transition: opacity var(--cell-fade-ms, 400ms) ease;
   }
 
+  .cell-img.is-loaded {
+    opacity: 1;
+  }
+
+  /* Photo cycling is disabled while the grid is redesigned.
   .cell-img.is-fading {
     opacity: 0;
   }
+  */
 
   .hover-panel {
     position: fixed;
@@ -161,117 +179,131 @@ const collections = await getPhotoCollections();
   }
 </style>
 
-<script
-  define:vars={{
-    CYCLE_MIN_MS,
-    CYCLE_VARIANCE_MS,
-    FADE_DURATION_MS,
-  }}
->
-  let stopPhotoGrid = null;
+<script>
+  // Photo cycling is disabled while the grid is redesigned. When it returns,
+  // restore the commented-out code below and get the cycling constants into
+  // this script, e.g. via data-* attributes on .photo-grid. (Don't go back to
+  // define:vars: that makes the script inline and untranspiled, so the type
+  // annotations here would break it.)
 
-  function randomIdleMs() {
-    const r = Math.random();
-    return CYCLE_MIN_MS + r * r * CYCLE_VARIANCE_MS;
+  let stopPhotoGrid: (() => void) | null = null;
+
+  // function randomIdleMs() {
+  //   const r = Math.random();
+  //   return CYCLE_MIN_MS + r * r * CYCLE_VARIANCE_MS;
+  // }
+
+  function revealWhenLoaded(img: HTMLImageElement) {
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.add("is-loaded");
+      return;
+    }
+    img.addEventListener("load", () => img.classList.add("is-loaded"), {
+      once: true,
+    });
   }
 
   function setupPhotoGrid() {
     if (stopPhotoGrid) stopPhotoGrid();
 
-    const grid = document.querySelector(".photo-grid");
+    // const grid = document.querySelector(".photo-grid");
     const cells = Array.from(document.querySelectorAll(".grid-cell"));
     const panel = document.getElementById("hover-panel");
     const nameEl = document.getElementById("hover-name");
     const dateEl = document.getElementById("hover-date");
 
-    const cellState = cells
-      .map((cell, i) => {
-        const raw = cell.getAttribute("data-photos") ?? "[]";
-        let photos = [];
-        try {
-          photos = JSON.parse(raw);
-        } catch {
-          photos = [];
-        }
+    document
+      .querySelectorAll<HTMLImageElement>(".cell-img")
+      .forEach(revealWhenLoaded);
 
-        const img = cell.querySelector(".cell-img");
-        if (!img || photos.length <= 1) return null;
+    // const cellState = cells
+    //   .map((cell, i) => {
+    //     const raw = cell.getAttribute("data-photos") ?? "[]";
+    //     let photos = [];
+    //     try {
+    //       photos = JSON.parse(raw);
+    //     } catch {
+    //       photos = [];
+    //     }
+    //
+    //     const img = cell.querySelector(".cell-img");
+    //     if (!img || photos.length <= 1) return null;
+    //
+    //     const startDelay = Math.random() * (CYCLE_MIN_MS + CYCLE_VARIANCE_MS);
+    //
+    //     for (let p = 1; p < photos.length; p++) {
+    //       const preload = new Image();
+    //       preload.src = photos[p];
+    //     }
+    //
+    //     return {
+    //       img,
+    //       photos,
+    //       index: 0,
+    //       phase: "waiting",
+    //       timeUntilFade: startDelay,
+    //       phaseEndsAt: 0,
+    //     };
+    //   })
+    //   .filter((s) => s !== null);
+    //
+    // let rafId = 0;
+    // let lastTick = 0;
+    // let stopped = false;
+    //
+    // function tick(now) {
+    //   if (stopped) return;
+    //   if (lastTick === 0) lastTick = now;
+    //
+    //   const rawDt = now - lastTick;
+    //   const isPaused = grid
+    //     ? grid.querySelector(".grid-cell:hover") !== null
+    //     : false;
+    //   lastTick = now;
+    //
+    //   if (isPaused) {
+    //     for (const s of cellState) {
+    //       if (s.phase === "fade-out" || s.phase === "fade-in") {
+    //         s.phaseEndsAt += rawDt;
+    //       }
+    //     }
+    //     rafId = requestAnimationFrame(tick);
+    //     return;
+    //   }
+    //
+    //   const dt = Math.min(rawDt, 500);
+    //
+    //   for (const s of cellState) {
+    //     if (s.phase === "fade-out") {
+    //       if (now < s.phaseEndsAt) continue;
+    //       s.img.src = s.photos[s.index];
+    //       s.img.classList.remove("is-fading");
+    //       s.phase = "fade-in";
+    //       s.phaseEndsAt = now + FADE_DURATION_MS;
+    //       continue;
+    //     }
+    //
+    //     if (s.phase === "fade-in") {
+    //       if (now < s.phaseEndsAt) continue;
+    //       s.phase = "waiting";
+    //       s.timeUntilFade = randomIdleMs();
+    //       continue;
+    //     }
+    //
+    //     s.timeUntilFade -= dt;
+    //     if (s.timeUntilFade <= 0) {
+    //       s.index = (s.index + 1) % s.photos.length;
+    //       s.img.classList.add("is-fading");
+    //       s.phase = "fade-out";
+    //       s.phaseEndsAt = now + FADE_DURATION_MS;
+    //       s.timeUntilFade = 0;
+    //     }
+    //   }
+    //
+    //   rafId = requestAnimationFrame(tick);
+    // }
 
-        const startDelay = Math.random() * (CYCLE_MIN_MS + CYCLE_VARIANCE_MS);
-
-        for (let p = 1; p < photos.length; p++) {
-          const preload = new Image();
-          preload.src = photos[p];
-        }
-
-        return {
-          img,
-          photos,
-          index: 0,
-          phase: "waiting",
-          timeUntilFade: startDelay,
-          phaseEndsAt: 0,
-        };
-      })
-      .filter((s) => s !== null);
-
-    let rafId = 0;
-    let lastTick = 0;
-    let stopped = false;
-
-    function tick(now) {
-      if (stopped) return;
-      if (lastTick === 0) lastTick = now;
-
-      const rawDt = now - lastTick;
-      const isPaused = grid
-        ? grid.querySelector(".grid-cell:hover") !== null
-        : false;
-      lastTick = now;
-
-      if (isPaused) {
-        for (const s of cellState) {
-          if (s.phase === "fade-out" || s.phase === "fade-in") {
-            s.phaseEndsAt += rawDt;
-          }
-        }
-        rafId = requestAnimationFrame(tick);
-        return;
-      }
-
-      const dt = Math.min(rawDt, 500);
-
-      for (const s of cellState) {
-        if (s.phase === "fade-out") {
-          if (now < s.phaseEndsAt) continue;
-          s.img.src = s.photos[s.index];
-          s.img.classList.remove("is-fading");
-          s.phase = "fade-in";
-          s.phaseEndsAt = now + FADE_DURATION_MS;
-          continue;
-        }
-
-        if (s.phase === "fade-in") {
-          if (now < s.phaseEndsAt) continue;
-          s.phase = "waiting";
-          s.timeUntilFade = randomIdleMs();
-          continue;
-        }
-
-        s.timeUntilFade -= dt;
-        if (s.timeUntilFade <= 0) {
-          s.index = (s.index + 1) % s.photos.length;
-          s.img.classList.add("is-fading");
-          s.phase = "fade-out";
-          s.phaseEndsAt = now + FADE_DURATION_MS;
-          s.timeUntilFade = 0;
-        }
-      }
-
-      rafId = requestAnimationFrame(tick);
-    }
-
-    function formatDate(iso) {
+    function formatDate(iso: string) {
       if (!iso) return "";
       const d = new Date(iso);
       if (Number.isNaN(d.getTime())) return "";
@@ -312,17 +344,17 @@ const collections = await getPhotoCollections();
     });
 
     function stop() {
-      stopped = true;
-      if (rafId !== 0) cancelAnimationFrame(rafId);
+      // stopped = true;
+      // if (rafId !== 0) cancelAnimationFrame(rafId);
       if (stopPhotoGrid === stop) stopPhotoGrid = null;
     }
 
     stopPhotoGrid = stop;
     document.addEventListener("astro:before-swap", stop, { once: true });
 
-    if (cellState.length > 0) {
-      rafId = requestAnimationFrame(tick);
-    }
+    // if (cellState.length > 0) {
+    //   rafId = requestAnimationFrame(tick);
+    // }
   }
 
   document.addEventListener("astro:page-load", setupPhotoGrid);
