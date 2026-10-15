@@ -14,6 +14,11 @@ export async function getStaticPaths() {
 
 const { collection } = Astro.props;
 const photos = collection.photos;
+
+// Only the first Photo and its neighbours (wrapping around) load up front.
+// The rest hold their address in data-src until the viewer comes near them.
+const isInInitialWindow = (pi: number) =>
+  pi === 0 || pi === 1 || pi === photos.length - 1;
 ---
 
 <PhotographyLayout title={collection.name}>
@@ -44,7 +49,8 @@ const photos = collection.photos;
             data-photo={pi}
           >
             <img
-              src={photo.src}
+              src={isInInitialWindow(pi) ? photo.src : undefined}
+              data-src={isInInitialWindow(pi) ? undefined : photo.src}
               alt={photo.alt}
               class="max-w-full max-h-[calc(100vh-11rem)] md:max-h-full object-contain"
             />
@@ -94,7 +100,18 @@ const photos = collection.photos;
     let currentPhoto = 0;
     const slides = document.querySelectorAll(".photo-slide");
 
+    function loadPhoto(pi) {
+      const img = document.querySelector(`.photo-slide[data-photo="${pi}"] img`);
+      const src = img?.getAttribute("data-src");
+      if (!src) return;
+      img.src = src;
+      img.removeAttribute("data-src");
+    }
+
     function showPhoto(pi) {
+      loadPhoto((pi - 1 + totalPhotos) % totalPhotos);
+      loadPhoto(pi);
+      loadPhoto((pi + 1) % totalPhotos);
       slides.forEach((slide) => {
         const sp = Number(slide.getAttribute("data-photo"));
         if (sp === pi) {
