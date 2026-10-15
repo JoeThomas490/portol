@@ -8,7 +8,8 @@
     "preview": "astro preview",
     "deploy": "astro build && wrangler pages deploy dist",
     "cf-preview": "astro build && wrangler pages dev dist",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",
@@ -20,13 +21,17 @@
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.185.0",
     "astro": "^5.0.0",
+    "js-yaml": "^4.3.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4.3.1",
     "three": "^0.185.0",
     "wrangler": "^4.105.0"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1"
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^26.1.1",
+    "vitest": "^5.0.4"
   }
 }

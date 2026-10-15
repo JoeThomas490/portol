@@ -11,15 +11,7 @@ import {
   R2_PUBLIC_URL,
   R2_SECRET_ACCESS_KEY,
 } from "astro:env/server";
-
-const IMAGE_EXTENSIONS = new Set([
-  ".jpg",
-  ".jpeg",
-  ".png",
-  ".webp",
-  ".gif",
-  ".avif",
-]);
+import { compareFilenames, isImageKey, normalizePrefix } from "./photo-keys";
 
 function getR2Config() {
   const accountId = R2_ACCOUNT_ID ?? CLOUDFLARE_ACCOUNT_ID;
@@ -57,18 +49,6 @@ function createR2Client() {
     endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
     credentials: { accessKeyId, secretAccessKey },
   });
-}
-
-function normalizePrefix(prefix: string): string {
-  return prefix.replace(/^\/+/, "").replace(/\/+$/, "");
-}
-
-function isImageKey(key: string): boolean {
-  const filename = key.split("/").pop() ?? "";
-  if (!filename || filename.startsWith(".")) return false;
-
-  const extension = filename.slice(filename.lastIndexOf(".")).toLowerCase();
-  return IMAGE_EXTENSIONS.has(extension);
 }
 
 function filenameToAlt(filename: string): string {
@@ -119,10 +99,5 @@ export async function listR2Images(prefix: string): Promise<R2Image[]> {
     continuationToken = response.NextContinuationToken;
   } while (continuationToken);
 
-  return images.sort((a, b) =>
-    a.filename.localeCompare(b.filename, undefined, {
-      numeric: true,
-      sensitivity: "base",
-    }),
-  );
+  return images.sort((a, b) => compareFilenames(a.filename, b.filename));
 }

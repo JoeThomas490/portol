@@ -2,8 +2,9 @@
 import { defineConfig, envField } from 'astro/config';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
+import { resizedCopies } from './src/build/resized-copies-integration.ts';
 export default defineConfig({
-  integrations: [react()],
+  integrations: [react(), resizedCopies()],
   env: {
     schema: {
       R2_ACCOUNT_ID: envField.string({ context: 'server', access: 'secret', optional: true }),
