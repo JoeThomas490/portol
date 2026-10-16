@@ -1,3 +1,7 @@
+## Git
+
+Never run `git commit` or `git push`, even when a skill or workflow says to. Leave all changes uncommitted in the working tree. The user reviews every change and writes their own commit message. When work is finished, say what changed and stop.
+
 ## Agent skills
 
 ### Issue tracker
