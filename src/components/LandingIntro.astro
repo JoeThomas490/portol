@@ -10,6 +10,7 @@ const { imageUrls } = Astro.props;
   id="landing-intro"
   class="landing-intro fixed inset-0 z-60 pointer-events-auto"
   aria-hidden="true"
+  hidden
 >
   <div class="landing-intro__backdrop absolute inset-0 bg-black"></div>
   <div
@@ -20,11 +21,10 @@ const { imageUrls } = Astro.props;
   </div>
 </div>
 
-<script define:vars={{ imageUrls }}>
+<script define:vars={{ imageUrls }} data-astro-rerun>
   const INTRO_DELAY_MS = 500;
   const INTRO_MOVE_MS = 800;
   const PRELOAD_TIMEOUT_MS = 2000;
-  const INTRO_KEY = "landing-intro-seen";
   const EASING = "cubic-bezier(0.25, 0, 0.2, 1)";
 
   function preloadImages(urls, timeoutMs) {
@@ -46,14 +46,15 @@ const { imageUrls } = Astro.props;
 
   function finishIntro(intro) {
     intro.remove();
-    sessionStorage.setItem(INTRO_KEY, "true");
+  }
+
+  // The overlay is rendered hidden, so a skipped intro never shows it.
+  function skipIntro(intro) {
+    intro?.remove();
   }
 
   function runLandingIntro() {
     const intro = document.getElementById("landing-intro");
-    // if (intro && sessionStorage.getItem(INTRO_KEY)) {
-    //   return finishIntro(intro);
-    // }
     if (window.location.pathname !== "/") return;
 
     const target = document.getElementById("site-logo");
@@ -108,7 +109,20 @@ const { imageUrls } = Astro.props;
     start();
   }
 
-  document.addEventListener("astro:page-load", runLandingIntro);
+  // The document is still parsing only when the browser loaded this page
+  // directly (fresh visit or reload). After a client-side navigation the
+  // router re-runs this script on a fully loaded document.
+  const arrived = document.readyState === "loading";
+  const intro = document.getElementById("landing-intro");
+
+  if (arrived) {
+    intro?.removeAttribute("hidden");
+    document.addEventListener("astro:page-load", runLandingIntro, {
+      once: true,
+    });
+  } else {
+    skipIntro(intro);
+  }
 </script>
 
 <style>
@@ -116,7 +130,7 @@ const { imageUrls } = Astro.props;
     transform: translate(-50%, -50%);
   }
 
-  :global(body:has(#landing-intro) #site-logo) {
+  :global(body:has(#landing-intro:not([hidden])) #site-logo) {
     visibility: hidden;
   }
 </style>
