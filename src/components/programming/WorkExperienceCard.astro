@@ -7,10 +7,9 @@ interface Props {
   logo?: string;
   dateRange: string;
   website?: string;
-  active?: boolean;
 }
 
-const { role, studio, logo, dateRange, website, active = false } = Astro.props;
+const { role, studio, logo, dateRange, website } = Astro.props;
 ---
 
 <div
@@ -56,16 +55,6 @@ const { role, studio, logo, dateRange, website, active = false } = Astro.props;
         </div>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        {
-          active && (
-            <span class="flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
-              <span class="relative flex h-2 w-2">
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-              </span>
-              Active
-            </span>
-          )
-        }
         <span class="text-xs text-(--color-text-muted) whitespace-nowrap">
           {dateRange}
         </span>
